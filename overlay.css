@@ -1,0 +1,97 @@
+/* overlay.css */
+#naina-assistant-ui {
+  position: fixed;
+  bottom: 80px;
+  right: 40px;
+  width: 400px;
+  max-width: 70vw;
+  height: 500px;
+  max-height: 70vh;
+  padding: 9px;
+  border-radius: 16px;
+  background: linear-gradient(
+    159deg,
+    rgba(113, 115, 121, 0.3) 12%,
+    rgba(49, 49, 54, 0.3) 100%
+  );
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  border: 1px solid rgba(124, 124, 126, 0.1);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  z-index: 2147483647;
+  overflow: hidden;
+}
+
+/* header */
+#ui-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: grab;
+  margin-bottom: 10px;
+  user-select: none;
+}
+
+#ui-header:active {
+  cursor: grabbing;
+}
+
+#ui-header span {
+  font-weight: 500;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+#ui-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+/* search */
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+#user-input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #bebec1;
+  font-size: 15px;
+  background: #8282879c;
+  color: #ffffff;
+}
+
+#user-input::placeholder {
+  color: #ffffff;
+}
+
+#ai-search {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #bebec1;
+  font-size: 14px;
+  background: #8282879c;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* output */
+#naina-output {
+  background: #8282879c;
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 13px;
+  overflow-y: auto;
+  color: #f1f1f1;
+  font-size: 15px;
+}
