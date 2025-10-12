@@ -1,20 +1,40 @@
 {
   "manifest_version": 3,
-  "name": "Smart AI Assistant",
-  "version": "1.1",
-  "description": "Floating Gemini Nano assistant overlay.",
-  "permissions": ["scripting", "activeTab", "storage"],
+  "name": "Naina Assistant",
+  "description": "Hyrbid AI Assistant Powered by Chrome Built-in AI Gemini Nano. Work Online and Offline both.",
+  "version": "1.0",
+  "icons": {
+    "16": "naina-icon.png",
+    "32": "naina-icon.png",
+    "48": "naina-icon.png",
+    "128": "naina-icon.png"
+  },
+  "permissions": ["scripting", "activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Smart AI Assistant",
+    "default_title": "Naina Assistant",
     "default_icon": {
-      "128": "icon128.png"
+      "16": "naina-icon.png",
+      "32": "naina-icon.png",
+      "48": "naina-icon.png",
+      "128": "naina-icon.png"
     }
   },
-  "icons": {
-    "128": "icon128.png"
-  }
+  "commands": {
+    "toggle-naina": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Q"
+      },
+      "description": "Toggle the Naina AI overlay"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }

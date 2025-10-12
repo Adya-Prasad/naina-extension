@@ -20,6 +20,10 @@
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
   z-index: 2147483647;
   overflow: hidden;
+  pointer-events: auto;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
 }
 
 /* header */
@@ -27,13 +31,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: grab;
+  cursor: all-scroll;
   margin-bottom: 10px;
   user-select: none;
-}
-
-#ui-header:active {
-  cursor: grabbing;
 }
 
 #ui-header span {
@@ -45,10 +45,20 @@
 #ui-close {
   background: transparent;
   border: none;
-  color: inherit;
   font-size: 16px;
   cursor: pointer;
   color: #ffffff;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+#ui-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#ui-close:active {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* search */
@@ -61,7 +71,7 @@
 
 #user-input {
   flex: 1;
-  padding: 6px 10px;
+  padding: 5px 9px;
   border-radius: 8px;
   border: 1px solid #bebec1;
   font-size: 15px;
@@ -75,7 +85,7 @@
 
 #ai-search {
   display: inline-flex;
-  padding: 6px 10px;
+  padding: 5px 9px;
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid #bebec1;
@@ -88,10 +98,126 @@
 /* output */
 #naina-output {
   background: #8282879c;
-  border-radius: 3px;
-  padding: 6px;
-  font-size: 13px;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
   overflow-y: auto;
   color: #f1f1f1;
-  font-size: 15px;
+  line-height: 1.5;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 8px;
+}
+
+/* Message types */
+.status-message {
+  color: #a0a0a0;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+/* .loading-message {
+  color: #4a9eff;
+  text-align: center;
+  padding: 20px;
+  animation: pulse 1.5s ease-in-out infinite;
+} */
+
+.success-message {
+  color: #f1f1f1;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.error-message {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+}
+
+.info-message {
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.1);
+  border: 1px solid rgba(74, 158, 255, 0.3);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Button states */
+#ai-search:disabled {
+  cursor: not-allowed;
+}
+
+#ai-search:disabled:hover {
+  background: #9f9fa19c;
+}
+
+/* Scrollbar styling */
+#naina-output::-webkit-scrollbar {
+  width: 6px;
+}
+
+#naina-output::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+#naina-output::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+#naina-output::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  padding: 8px 0;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#features {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
+}
+
+#features > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #a0a0a0;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#features > div:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+#features > div:active {
+  transform: scale(0.95);
 }
