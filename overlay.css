@@ -1,4 +1,3 @@
-/* overlay.css */
 #naina-assistant-ui {
   position: fixed;
   bottom: 80px;
@@ -9,14 +8,6 @@
   max-height: 70vh;
   padding: 9px;
   border-radius: 16px;
-  background: linear-gradient(
-    159deg,
-    rgba(113, 115, 121, 0.3) 12%,
-    rgba(49, 49, 54, 0.3) 100%
-  );
-  backdrop-filter: blur(1.5px);
-  -webkit-backdrop-filter: blur(1.5px);
-  border: 1px solid rgba(124, 124, 126, 0.1);
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
   z-index: 2147483647;
   overflow: hidden;
@@ -97,55 +88,36 @@
 
 /* output */
 #naina-output {
-  background: #8282879c;
+  /* background: #828287a4; */
+  background: #79787180;
   border-radius: 8px;
   padding: 12px;
-  font-size: 14px;
+  font-size: 17px;
   overflow-y: auto;
   color: #f1f1f1;
   line-height: 1.5;
   flex: 1;
   min-height: 0;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
-
-/* Message types */
-.status-message {
-  color: #a0a0a0;
-  font-style: italic;
-  text-align: center;
-  padding: 20px;
-}
-
-/* .loading-message {
-  color: #4a9eff;
-  text-align: center;
-  padding: 20px;
-  animation: pulse 1.5s ease-in-out infinite;
-} */
 
 .success-message {
-  color: #f1f1f1;
+  color: #ffffff;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-size: 17px;
 }
 
 .error-message {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.1);
-  border: 1px solid rgba(255, 107, 107, 0.3);
-  border-radius: 4px;
-  padding: 8px;
-  margin: 4px 0;
+  color: #e72c2c;
+  font-size: 13px;
+  font-style: italic; 
 }
 
 .info-message {
-  color: #4a9eff;
-  background: rgba(74, 158, 255, 0.1);
-  border: 1px solid rgba(74, 158, 255, 0.3);
-  border-radius: 4px;
-  padding: 8px;
-  margin: 4px 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.89);
+  font-size: 13px;
 }
 
 /* Loading animation */
@@ -165,30 +137,35 @@
 
 /* Scrollbar styling */
 #naina-output::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+
 }
 
 #naina-output::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(129, 129, 129, 0.411);
   border-radius: 3px;
+  padding: 0.5px;
 }
 
 #naina-output::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(131, 129, 129, 0.562);
   border-radius: 3px;
 }
 
 #naina-output::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(87, 89, 92, 0.842);
 }
 
+
 /* Footer */
-footer {
+#footer {
   margin-top: auto;
-  padding: 8px 0;
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #82828788;
+  color: white;
 }
 
 #features {
@@ -202,22 +179,33 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 27px;
+  height: 27px;
   border-radius: 6px;
   cursor: pointer;
-  color: #a0a0a0;
+  color: #eeeeee;
   transition: all 0.2s ease;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #features > div:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(150, 150, 150, 0.397);
+  padding: 2px;
 }
 
 #features > div:active {
   transform: scale(0.95);
+  background: rgba(140, 140, 141, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+       url('fonts/OpenDyslexic-Regular.woff') format('woff'),
+       url('fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* This prevents a blank screen while the font loads */
 }

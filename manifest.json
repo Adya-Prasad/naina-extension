@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Naina Assistant",
-  "description": "Hyrbid AI Assistant Powered by Chrome Built-in AI Gemini Nano. Work Online and Offline both.",
+  "description": "Hyrbid AI Agent Powered by Chrome Built-in AI Gemini Nano. Work Online and Offline both.",
   "version": "1.0",
   "icons": {
-    "16": "naina-icon.png",
-    "32": "naina-icon.png",
-    "48": "naina-icon.png",
-    "128": "naina-icon.png"
+    "16": "images/naina-icon.png",
+    "32": "images/naina-icon.png",
+    "48": "images/naina-icon.png",
+    "128": "images/naina-icon.png"
   },
   "permissions": ["scripting", "activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
@@ -17,10 +17,10 @@
   "action": {
     "default_title": "Naina Assistant",
     "default_icon": {
-      "16": "naina-icon.png",
-      "32": "naina-icon.png",
-      "48": "naina-icon.png",
-      "128": "naina-icon.png"
+      "16": "images/naina-icon.png",
+      "32": "images/naina-icon.png",
+      "48": "images/naina-icon.png",
+      "128": "images/naina-icon.png"
     }
   },
   "commands": {
