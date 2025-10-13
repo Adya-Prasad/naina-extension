@@ -18,14 +18,13 @@
       <div class="search-box">
         <input id="user-input" type="text" placeholder="⌕ Ask your query..." />
         <button id="ai-search" title="Send">
-            <svg width="18px" height="18px" viewBox="0 0 20 20" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.68542 6.65868C0.758716 6.96758 0.779177 8.28543 1.71502 8.56541L9.20844 10.8072L11.6551 18.5165C11.948 19.4394 13.2507 19.4488 13.5569 18.5302L18.8602 2.62029C19.1208 1.83853 18.3771 1.09479 17.5953 1.35538L1.68542 6.65868ZM5.31842 7.55586L16.3304 3.8852L12.6316 14.9817L10.9548 9.69826C10.8547 9.38295 10.6052 9.13754 10.2883 9.04272L5.31842 7.55586Z" fill="currentColor"/>
-                <path d="M17.7674 1.43951L18.8105 2.51742L9.98262 11.0605L8.93948 9.98265L17.7674 1.43951Z" fill="currentColor"/>
-                </svg>&nbsp; Go
+            <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+<path d="M9.91158 12H7.45579H4L2.02268 4.13539C2.0111 4.0893 2.00193 4.04246 2.00046 3.99497C1.97811 3.27397 2.77209 2.77366 3.46029 3.10388L22 12L3.46029 20.8961C2.77983 21.2226 1.99597 20.7372 2.00002 20.0293C2.00038 19.9658 2.01455 19.9032 2.03296 19.8425L3.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>&nbsp; Go
           </button>
       </div>
       <div id="naina-output">
-        <div class="status-message">Ready to help! Ask me anything...</div>
+        <div class="status-message" id="output-text">Ready to help! Ask me anything...</div>
       </div>
       <footer id="footer">
         <div id="features">
@@ -57,7 +56,7 @@
           <div id="translate" title="translate the text">
             <svg width="20px" height="20px" viewBox="0 0 20 20"><path d="M7.41 9l2.24 2.24-.83 2L6 10.4l-3.3 3.3-1.4-1.42L4.58 9l-.88-.88c-.53-.53-1-1.3-1.3-2.12h2.2c.15.28.33.53.51.7l.89.9.88-.88C7.48 6.1 8 4.84 8 4H0V2h5V0h2v2h5v2h-2c0 1.37-.74 3.15-1.7 4.12L7.4 9zm3.84 8L10 20H8l5-12h2l5 12h-2l-1.25-3h-5.5zm.83-2h3.84L14 10.4 12.08 15z" fill="currentColor"/></svg>
           </div>
-          <div id="saved-collection" title="YOur saved collection">
+          <div id="saved-collection" title="Your saved collection">
            <svg viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
         </div>
@@ -76,8 +75,8 @@
   const input = overlay.querySelector("#user-input");
   const searchBtn = overlay.querySelector("#ai-search");
   const output = overlay.querySelector("#naina-output");
+  const outputTxt = overlay.querySelector("#output-text");
   const footer = overlay.querySelector("#footer");
-  const infoMessage = overlay.querySelector(".info-message");
 
   
   // Ensure overlay doesn't interfere with page styles and is visible
@@ -210,9 +209,9 @@
     
     if (type === "success") {
       // Render markdown for AI responses
-      output.innerHTML = `<div class="${messageClass}">${renderMarkdown(message)}</div>`;
+      output.innerHTML = `<div id="${messageClass}">${renderMarkdown(message)}</div>`;
     } else {
-      output.innerHTML = `<div class="${messageClass}">${message}</div>`;
+      output.innerHTML = `<div id="${messageClass}">${message}</div>`;
     }
   }
 
@@ -375,10 +374,9 @@ Please provide a helpful response considering the current page context. If the u
       // Reset button state
       searchBtn.disabled = false;
       searchBtn.innerHTML = `
-        <svg width="18px" height="18px" viewBox="0 0 20 20" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.68542 6.65868C0.758716 6.96758 0.779177 8.28543 1.71502 8.56541L9.20844 10.8072L11.6551 18.5165C11.948 19.4394 13.2507 19.4488 13.5569 18.5302L18.8602 2.62029C19.1208 1.83853 18.3771 1.09479 17.5953 1.35538L1.68542 6.65868ZM5.31842 7.55586L16.3304 3.8852L12.6316 14.9817L10.9548 9.69826C10.8547 9.38295 10.6052 9.13754 10.2883 9.04272L5.31842 7.55586Z" fill="currentColor"/>
-                <path d="M17.7674 1.43951L18.8105 2.51742L9.98262 11.0605L8.93948 9.98265L17.7674 1.43951Z" fill="currentColor"/>
-                </svg>&nbsp; Go
+        <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+        <path d="M9.91158 12H7.45579H4L2.02268 4.13539C2.0111 4.0893 2.00193 4.04246 2.00046 3.99497C1.97811 3.27397 2.77209 2.77366 3.46029 3.10388L22 12L3.46029 20.8961C2.77983 21.2226 1.99597 20.7372 2.00002 20.0293C2.00038 19.9658 2.01455 19.9032 2.03296 19.8425L3.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>&nbsp; Go
       `;
     }
   }
@@ -389,7 +387,8 @@ Please provide a helpful response considering the current page context. If the u
     const saveNoteBtn = overlay.querySelector("#save-note");
     const dyslexiaBtn = overlay.querySelector("#dyslexia-friendly");
     const translateBtn = overlay.querySelector("#translate");
-    const modeChangeBtn = overlay.querySelector("#mode-change");
+    const collectionBtn = overlay.querySelector("#saved-collection");
+  
 
     // Read out functionality
     readOutBtn.addEventListener("click", () => {
@@ -407,64 +406,44 @@ Please provide a helpful response considering the current page context. If the u
       }
     });
 
-    // Save note functionality
-    saveNoteBtn.addEventListener("click", () => {
-      const outputText = output.textContent;
-      if (outputText) {
-        const blob = new Blob([`# AI Response - ${new Date().toLocaleString()}\n\n${outputText}`], 
-          { type: 'text/markdown' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `naina-note-${Date.now()}.md`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    });
-
     // Dyslexia friendly mode
     dyslexiaBtn.addEventListener("click", () => {
       isDyslexiaMode = !isDyslexiaMode;
       output.style.fontFamily = isDyslexiaMode ? 
-        'OpenDyslexic, Comic Sans MS", "Comic Sans,' : 
+        'OpenDyslexic, "Comic Sans MS", "Comic Sans"' : 
         '"Segoe UI", Roboto, Arial, sans-serif';
-      overlay.style.color = isDyslexiaMode ? "#332626" : "#f1f1f1";
-      output.style.fontSize = isDyslexiaMode ? '17px': '16px';
-      output.style.lineHeight = isDyslexiaMode ? '1.8' : '1.5';
+      output.style.lineHeight = isDyslexiaMode ? '1.55' : '1.5';
+      output.style.letterSpacing = isDyslexiaMode ? '0.04rem': '0.01rem';
       output.style.background = isDyslexiaMode ? "#f3e6de": "#71737980";
-      output.style.color = isDyslexiaMode ? "#332626" : "#f1f1f1";
-      input.style.background = "#f3e6de";
-      input.style.color = "#332626";
-      input.style.caretColor = "#332626";
-      input.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", "Comic Sans", sans-serif';
-      input.style.letterSpacing = "0.05em";
-      input.style.setProperty("--placeholder-color", "#332626");
+      output.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
+      outputTxt.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
+      input.style.background = isDyslexiaMode ? "#f3e6de": "#8282879c";
+      input.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
+      input.style.letterSpacing = isDyslexiaMode ? '0.05rem': '0.03rem';
+      input.style.fontFamily = isDyslexiaMode ? 
+        'OpenDyslexic, "Comic Sans MS", "Comic Sans"' : 
+        '"Segoe UI", Roboto, Arial, sans-serif';
 
-      // Apply placeholder color using CSS
-      const style = document.createElement("style");
-      style.textContent = `
-        input::placeholder {
-          color: var(--placeholder-color, #332626);
-          font-family: OpenDyslexic, "Comic Sans MS", "Comic Sans", sans-serif;
-          letter-spacing: 0.05em;
-        }
-      `;
-      document.head.appendChild(style);
+      document.documentElement.style.setProperty('--placeholder-color', 
+      isDyslexiaMode ? '#332626' : '#ffffff');
 
-      searchBtn.style.background = "#f3e6de";
-      searchBtn.style.color = "#332626";
-      searchBtn.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", "Comic Sans", sans-serif';
-      searchBtn.style.letterSpacing = "0.05em";
+      searchBtn.style.background = isDyslexiaMode ? "#f3e6de": "#8282879c";
+      searchBtn.style.fontFamily = isDyslexiaMode ? 
+        'OpenDyslexic, "Comic Sans MS", "Comic Sans" ' : 
+        '"Segoe UI", Roboto, Arial, sans-serif';
+      searchBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
+      searchBtn.style.fontWeight = isDyslexiaMode ? '600' : '400';
 
-      footer.style.background = "#f3e6de";
-      footer.style.color = "#332626";
-      footer.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", "Comic Sans", sans-serif';
-      footer.style.letterSpacing = "0.05em";
+      footer.style.background = isDyslexiaMode ? "#f3e6de": "#8282879c";
+      readOutBtn.style.color = isDyslexiaMode ? "#332626" : "#eeeeee";
+      saveNoteBtn.style.color = isDyslexiaMode ? "#332626" : "#eeeeee";
+      dyslexiaBtn.style.color = isDyslexiaMode ? "#332626" : "#eeeeee";
+      translateBtn.style.color = isDyslexiaMode ? "#332626" : "#eeeeee";
+      collectionBtn.style.color = isDyslexiaMode ? "#332626" : "#eeeeee";
 
-      output.style.background = "#f3e6de";
-      output.style.color = "#332626";
-      output.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", "Comic Sans", sans-serif';
-      output.style.letterSpacing = "0.05em";
+      overlay.style.color = isDyslexiaMode ? "#332626" : "#ffffff";     
+
+
     });
 
     // Translate functionality
@@ -472,7 +451,7 @@ Please provide a helpful response considering the current page context. If the u
       const outputText = output.textContent;
       if (outputText && currentSession) {
         try {
-          showMessage("Translating...", "loading");
+          showMessage("Translating...");
           const translatePrompt = `Please translate the following text to English (if it's not already in English) or to a more readable format:\n\n${outputText}`;
           const translation = await currentSession.prompt(translatePrompt);
           showMessage(translation, "success");

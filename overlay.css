@@ -67,11 +67,14 @@
   border: 1px solid #bebec1;
   font-size: 15px;
   background: #8282879c;
-  color: #ffffff;
+}
+
+:root {
+  --placeholder-color: #ffffff;
 }
 
 #user-input::placeholder {
-  color: #ffffff;
+  color: var(--placeholder-color);
 }
 
 #ai-search {
@@ -165,7 +168,6 @@
   border-radius: 8px;
   font-size: 15px;
   background: #82828788;
-  color: white;
 }
 
 #features {
