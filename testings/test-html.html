@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="overlay.css">
-    <title>Document</title>
+    <title>Temporary testing</title>
 </head>
 <body>
             <div id="naina-assistant-ui" role="dialog" aria-label="Smart AI Assistant">
@@ -15,14 +15,13 @@
       <div class="search-box">
         <input id="user-input" type="text" placeholder="⌕ Ask your query..." />
         <button id="ai-search" title="Send">
-            <svg width="18px" height="18px" viewBox="0 0 20 20" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.68542 6.65868C0.758716 6.96758 0.779177 8.28543 1.71502 8.56541L9.20844 10.8072L11.6551 18.5165C11.948 19.4394 13.2507 19.4488 13.5569 18.5302L18.8602 2.62029C19.1208 1.83853 18.3771 1.09479 17.5953 1.35538L1.68542 6.65868ZM5.31842 7.55586L16.3304 3.8852L12.6316 14.9817L10.9548 9.69826C10.8547 9.38295 10.6052 9.13754 10.2883 9.04272L5.31842 7.55586Z" fill="currentColor"/>
-                <path d="M17.7674 1.43951L18.8105 2.51742L9.98262 11.0605L8.93948 9.98265L17.7674 1.43951Z" fill="currentColor"/>
-                </svg>&nbsp; Go
+            <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+<path d="M9.91158 12H7.45579H4L2.02268 4.13539C2.0111 4.0893 2.00193 4.04246 2.00046 3.99497C1.97811 3.27397 2.77209 2.77366 3.46029 3.10388L22 12L3.46029 20.8961C2.77983 21.2226 1.99597 20.7372 2.00002 20.0293C2.00038 19.9658 2.01455 19.9032 2.03296 19.8425L3.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>&nbsp; Go
           </button>
       </div>
       <div id="naina-output">
-        <div id="status-message">Ready to help! Ask me anything...</div>
+        <div class="status-message" id="output-text">Ready to help! Ask me anything...</div>
       </div>
       <footer id="footer">
         <div id="features">
@@ -51,10 +50,20 @@
               </path>
             </svg>
           </div>
+          <div id ="translation-lang">
+            <select id="to-lang">
+              <option value="hi" title="Hindi" selected>hi </option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese</option>
+          </select>
+          </div>
           <div id="translate" title="translate the text">
             <svg width="20px" height="20px" viewBox="0 0 20 20"><path d="M7.41 9l2.24 2.24-.83 2L6 10.4l-3.3 3.3-1.4-1.42L4.58 9l-.88-.88c-.53-.53-1-1.3-1.3-2.12h2.2c.15.28.33.53.51.7l.89.9.88-.88C7.48 6.1 8 4.84 8 4H0V2h5V0h2v2h5v2h-2c0 1.37-.74 3.15-1.7 4.12L7.4 9zm3.84 8L10 20H8l5-12h2l5 12h-2l-1.25-3h-5.5zm.83-2h3.84L14 10.4 12.08 15z" fill="currentColor"/></svg>
           </div>
-          <div id="saved-collection" title="YOur saved collection">
+          
+          <div id="saved-collection" title="Your saved collection">
            <svg viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
         </div>
@@ -62,4 +71,3 @@
     </div>
 </body>
 </html>
-

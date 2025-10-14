@@ -1,23 +1,7 @@
 #naina-assistant-ui {
-  position: fixed;
-  bottom: 80px;
-  right: 40px;
-  width: 400px;
-  max-width: 70vw;
-  height: 500px;
-  max-height: 70vh;
-  padding: 9px;
-  border-radius: 16px;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  z-index: 2147483647;
-  overflow: hidden;
-  pointer-events: auto;
-  user-select: none;
   display: flex;
-  flex-direction: column;
 }
 
-/* header */
 #ui-header {
   display: flex;
   align-items: center;
@@ -30,7 +14,7 @@
 #ui-header span {
   font-weight: 500;
   font-size: 14px;
-  color: #ffffff;
+  color: #f5f5f7;
 }
 
 #ui-close {
@@ -52,7 +36,6 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* search */
 .search-box {
   display: flex;
   gap: 8px;
@@ -64,84 +47,66 @@
   flex: 1;
   padding: 5px 9px;
   border-radius: 8px;
-  border: 1px solid #bebec1;
+  border: 1px solid #ffffff;
   font-size: 15px;
   background: #8282879c;
+  color: #ffffff;
 }
 
 :root {
-  --placeholder-color: #ffffff;
+  --placeholder-color: #ffffffff;
 }
 
 #user-input::placeholder {
   color: var(--placeholder-color);
 }
 
+/* send button */
 #ai-search {
   display: inline-flex;
   padding: 5px 9px;
   border-radius: 8px;
   cursor: pointer;
-  border: 1px solid #bebec1;
+  border: 1px solid #ffffff;
   font-size: 14px;
   background: #8282879c;
   color: #ffffff;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-/* output */
-#naina-output {
-  /* background: #828287a4; */
-  background: #79787180;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 17px;
-  overflow-y: auto;
-  color: #f1f1f1;
-  line-height: 1.5;
-  flex: 1;
-  min-height: 0;
-  margin-bottom: 5px;
-}
-
-.success-message {
-  color: #ffffff;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-size: 17px;
-}
-
-.error-message {
-  color: #e72c2c;
-  font-size: 13px;
-  font-style: italic; 
-}
-
-.info-message {
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.89);
-  font-size: 13px;
-}
-
-/* Loading animation */
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+#ai-search:hover {
+  transform: scale(0.88);
 }
 
 /* Button states */
 #ai-search:disabled {
   cursor: not-allowed;
+  transform: scale(1);
 }
 
 #ai-search:disabled:hover {
   background: #9f9fa19c;
 }
 
+/* output */
+#naina-output {
+  background: #79787180;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 17px;
+  overflow-y: auto;
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+  line-height: 1.5;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 5px;
+}
+
 /* Scrollbar styling */
 #naina-output::-webkit-scrollbar {
   width: 5px;
-
 }
 
 #naina-output::-webkit-scrollbar-track {
@@ -151,14 +116,36 @@
 }
 
 #naina-output::-webkit-scrollbar-thumb {
-  background: rgba(131, 129, 129, 0.562);
+  background: rgba(54, 55, 56, 0.836);
   border-radius: 3px;
 }
 
 #naina-output::-webkit-scrollbar-thumb:hover {
-  background: rgba(87, 89, 92, 0.842);
+  background: rgba(112, 116, 141, 0.842);
 }
 
+.success-message {
+  color: #ffffff;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 17px;
+  background: none;
+}
+
+.error-message {
+  color: #e72c2c;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.info-message {
+  font-style: italic;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #f0f0f0;
+  font-size: 13px;
+  font-style: italic;
+}
 
 /* Footer */
 #footer {
@@ -185,29 +172,44 @@
   height: 27px;
   border-radius: 6px;
   cursor: pointer;
-  color: #eeeeee;
-  transition: all 0.2s ease;
+  color: #ffffff;
+  transition: all 0.3s ease;
 }
 
 #features > div:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(150, 150, 150, 0.397);
-  padding: 2px;
+  transform: scale(0.88);
 }
 
 #features > div:active {
-  transform: scale(0.95);
-  background: rgba(140, 140, 141, 0.5);
-  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #ffffff;
+  border-radius: 3px;
+  
 }
 
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('fonts/OpenDyslexic-Regular.woff2') format('woff2'),
-       url('fonts/OpenDyslexic-Regular.woff') format('woff'),
-       url('fonts/OpenDyslexic-Regular.otf') format('opentype');
+#to-lang{
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    margin-left: 4px;
+    padding: 2px;
+    font-weight: 600;
+    letter-spacing: 0.03rem;
+}
+
+option{
+  background: #898b9686;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+}
+
+/* @font-face {
+  font-family: "OpenDyslexic";
+  src: url("fonts/OpenDyslexic-Regular.woff2") format("woff2"),
+    url("fonts/OpenDyslexic-Regular.woff") format("woff"),
+    url("fonts/OpenDyslexic-Regular.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
-  font-display: swap; /* This prevents a blank screen while the font loads */
-}
+  font-display: swap;
+} */

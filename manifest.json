@@ -10,7 +10,7 @@
     "128": "images/naina-icon.png"
   },
   "permissions": ["scripting", "activeTab", "tabs"],
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": ["<all_urls>", "file:///*"],
   "background": {
     "service_worker": "background.js"
   },
@@ -33,7 +33,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["<all_urls>", "file:///*"],
       "js": ["content.js"]
     }
   ]
