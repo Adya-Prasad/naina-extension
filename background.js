@@ -1,17 +1,6 @@
 // background.js
-chrome.action.onClicked.addListener(async (tab) => {
-  await toggleOverlay(tab);
-});
 
-chrome.commands.onCommand.addListener(async (command) => {
-  if (command === "toggle-naina") {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab && tab.id) {
-      await toggleOverlay(tab);
-    }
-  }
-});
-
+// Toggle overlay function
 async function toggleOverlay(tab) {
   try {
     const url = tab?.url || "";
@@ -25,19 +14,18 @@ async function toggleOverlay(tab) {
     // Check if overlay already exists
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: () => document.getElementById("naina-assistant-ui")
+      func: () => !!document.getElementById("naina-assistant-ui")
     });
 
     if (results[0]?.result) {
-      // Show existing overlay if it's hidden, otherwise do nothing
+      // Toggle existing overlay
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
           const overlay = document.getElementById("naina-assistant-ui");
-          if (overlay && overlay.style.display === "none") {
-            overlay.style.display = "block";
+          if (overlay) {
+            overlay.style.display = overlay.style.display === "none" ? "block" : "none";
           }
-          // If overlay is already visible, don't hide it - keep it open
         }
       });
       return;
@@ -59,3 +47,35 @@ async function toggleOverlay(tab) {
     console.error("Overlay toggle failed:", err);
   }
 }
+
+// Listener for browser action
+chrome.action.onClicked.addListener(async (tab) => {
+  await toggleOverlay(tab);
+});
+
+// Listener for keyboard shortcut
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command === "toggle-naina") {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab && tab.id) {
+      await toggleOverlay(tab);
+    }
+  }
+});
+
+// Listener for context menu
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "toggle-naina-context",
+    title: "Naina Assistant",
+    contexts: ["page"]
+  });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId === "toggle-naina-context") {
+    if (tab && tab.id) {
+      await toggleOverlay(tab);
+    }
+  }
+});

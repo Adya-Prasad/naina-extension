@@ -9,7 +9,7 @@
     "48": "images/naina-icon.png",
     "128": "images/naina-icon.png"
   },
-  "permissions": ["scripting", "activeTab", "tabs"],
+  "permissions": ["scripting", "activeTab", "tabs", "contextMenus"],
   "host_permissions": ["<all_urls>", "file:///*"],
   "background": {
     "service_worker": "background.js"
