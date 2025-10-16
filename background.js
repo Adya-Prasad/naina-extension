@@ -40,7 +40,7 @@ async function toggleOverlay(tab) {
     // Inject overlay JS
     await chrome.scripting.executeScript({
       target: { tabId: tab.id, allFrames: true },
-      files: ["overlay.js"]
+      files: ["markdown_renderer.js", "overlay.js"]
     });
 
   } catch (err) {

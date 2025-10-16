@@ -177,67 +177,6 @@
     }
   }
 
-  // In-built local markdown renderer
-function renderMarkdown(text) {
-  if (!text) return "";
-
-  let html = text
-    // Headers
-    .replace(/^### (.*$)/gim, '<h3 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 style="margin: 1px 0px; font-size: 19px; font-weight: 700;">$1</h1>')
-
-    // Code blocks (handles ```json, ```js, etc.)
-    .replace(
-      /```(?:\w+)?\n([\s\S]*?)```/g,
-      '<pre style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 1px 0; overflow-x: auto;"><code style="color: #e4f6ffff; font-family: \'Courier New\', monospace; font-size: 14px;">$1</code></pre>'
-    )
-
-    // Bold text
-    .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold;">$1</strong>')
-    .replace(/__(.*?)__/g, '<strong style="font-weight: bold;">$1</strong>')
-
-    // Italic text
-    .replace(/\*(.*?)\*/g, '<em style="font-style: italic;">$1</em>')
-    .replace(/_(.*?)_/g, '<em style="font-style: italic;">$1</em>')
-
-    // Inline code
-    .replace(
-      /`([^`]+)`/g,
-      '<code style="background: rgba(0,0,0,0.3); padding: 3px 4px; border-radius: 3px; color: #f0f0f0; font-family: \'Courier New\', monospace; font-size: 13px;">$1</code>'
-    )
-
-    // Links
-    .replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" style="color:rgba(13, 123, 250, 1); text-decoration: underline;" target="_blank">$1</a>'
-    );
-
-  // Unordered lists (*, -, +)
-  html = html.replace(/((?:^\s*[\*\-\+]\s+.*\n?)+)/gm, match => {
-    const items = match
-      .trim()
-      .split('\n')
-      .map(item => `<li>${item.replace(/^\s*[\*\-\+]\s+/, '')}</li>`)
-      .join('');
-    return `<ul>${items}</ul>`;
-  });
-
-  // Ordered lists (1., 2., ...)
-  html = html.replace(/((?:^\s*\d+\.\s+.*\n?)+)/gm, match => {
-    const items = match
-      .trim()
-      .split('\n')
-      .map(item => `<li>${item.replace(/^\s*\d+\.\s+/, '')}</li>`)
-      .join('');
-    return `<ol>${items}</ol>`;
-  });
-
-  // Line breaks
-  html = html.replace(/\n/g, '<br>');
-
-  return html;
-}
   // Utility functions
   function showMessage(message, type = "info") {
     const messageClass = type === "error" ? "error-message" :
@@ -305,8 +244,8 @@ function renderMarkdown(text) {
 
     // Clean up the content
     mainContent = mainContent
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .replace(/\n\s*\n/g, '\n') // Remove empty lines
+      .replace(/\s+/g, ' ') 
+      .replace(/\n\s*\n/g, '\n') 
       .trim();
 
     // Limit content length to avoid token limits
@@ -370,8 +309,7 @@ function renderMarkdown(text) {
     // Show loading state
     searchBtn.disabled = true;
     searchBtn.textContent = "Working...";
-    output.innerHTML = ''; // Clear previous output
-
+    output.innerHTML = ''; 
     try {
       if (!pageContext) {
         pageContext = await extractPageContext();
@@ -419,16 +357,15 @@ function renderMarkdown(text) {
       // Display response
       let fullResponse = "";
       output.innerHTML = '<div id="success-message"></div>';
-      // output.innerHTML = '<div class="success-message"></div>';
       const successMessageDiv = output.querySelector('#success-message');
 
+      // stream output
       for await (const chunk of stream) {
         fullResponse += chunk;
         successMessageDiv.innerHTML = renderMarkdown(fullResponse);
       }
       OutputResponseCopy = fullResponse;
 
-      // Clear input
       input.value = "";
 
     } catch (error) {
@@ -441,7 +378,6 @@ function renderMarkdown(text) {
         currentSession = null;
       }
     } finally {
-      // Reset button state
       searchBtn.disabled = false;
       searchBtn.innerHTML = `
         <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
@@ -460,14 +396,12 @@ function renderMarkdown(text) {
     const translateBtn = overlay.querySelector("#translate");
     const savedCollectionBtn = overlay.querySelector("#saved-collection");
 
-    // Read out (speak) functionality
+    // Read out (speak) feature
     readOutBtn.addEventListener("click", () => {
       const outputText = output.textContent;
       if (!outputText || !('speechSynthesis' in window)) {
         return;
       }
-
-      // Toggle functionality: if speaking, cancel and exit.
       if (speechSynthesis.speaking) {
         speechSynthesis.cancel();
         return;
@@ -524,9 +458,10 @@ function renderMarkdown(text) {
         const { notes = [] } = await chrome.storage.local.get("notes");
         notes.push(note);
         await chrome.storage.local.set({ notes });
-
-        showMessage("Note saved successfully!");
-        console.log("Note saved:", note);
+        showMessage("Note saved successfully! Open collection page to see saved notes");
+        setTimeout( () => {
+          output.innerHTML= renderMarkdown(OutputResponseCopy);
+        }, 1500);        
       } catch (error) {
         console.error("Error saving note:", error);
         showMessage("Failed to save note. Check console for details.");

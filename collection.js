@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         noteTitle.textContent = `Input: ${note.input}`;
         noteBody.innerHTML = `
           <p class="label"><b>Saved on:</b> ${note.timestamp}</p>
-          <p>${note.output}</p>
+          <div>${renderMarkdown(note.output)}</div>
         `;
         modal.classList.add("active");
       });
@@ -69,16 +69,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initial load
   loadNotes();
 });
-  // // --- Open Chat Popup Window ---
-  // const openChatBtn = document.getElementById("open-chat");
-  // if (openChatBtn) {
-  //   openChatBtn.addEventListener("click", () => {
-  //     const popupUrl = chrome.runtime.getURL("overlay.html");
-  //     chrome.windows.create({
-  //       url: popupUrl,
-  //       type: "popup",
-  //       width: 420,
-  //       height: 600
-  //     });
-  //   });
-  // }
