@@ -614,6 +614,14 @@
     e.preventDefault();
   });
 
+  footer.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - overlay.getBoundingClientRect().left;
+    offsetY = e.clientY - overlay.getBoundingClientRect().top;
+    overlay.style.transition = "none";
+    e.preventDefault();
+  });
+
   // Close button - only way to close the overlay
   closeBtn.addEventListener("click", (e) => {
     e.stopPropagation();
