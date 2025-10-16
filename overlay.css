@@ -1,5 +1,6 @@
 #naina-assistant-ui {
   display: flex;
+  cursor: ew-resize;
 }
 
 #ui-header {

@@ -10,7 +10,8 @@
 
   // Create the overlay HTML
   const template = `
-        <div id="naina-assistant-ui" role="dialog" aria-label="Smart AI Assistant">
+    <div id="naina-assistant-ui" role="dialog" aria-label="Smart AI Assistant">
+      <div id="resizer-left"></div>
       <div id="ui-header">
         <span>Naina Assistant</span>
         <button id="ui-close" title="Close">✖</button>
@@ -79,6 +80,7 @@
           </div>
         </div>
       </footer>
+      <div id="resizer-right"></div>
     </div>
   `;
 
@@ -103,9 +105,9 @@
   overlay.style.bottom = "80px";
   overlay.style.right = "40px";
   overlay.style.width = "350px";
+  overlay.style.minWidth = "340px";
   overlay.style.maxWidth = "70vw";
   overlay.style.height = "600px";
-  overlay.style.maxHeight = "70vh";
   overlay.style.padding = "6px";
   overlay.style.borderRadius = "16px";
   overlay.style.background = "rgba(113, 115, 121, 0.5)";
@@ -119,6 +121,26 @@
   overlay.style.flexDirection = "column";
   overlay.style.boxSizing = "border-box";
 
+  // Add styles for resizers
+  const style = document.createElement('style');
+  style.textContent = `
+    #resizer-left, #resizer-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      cursor: ew-resize;
+      background: transparent;
+    }
+    #resizer-left {
+      left: 0;
+    }
+    #resizer-right {
+      right: 0;
+    }
+  `;
+  document.head.appendChild(style);
+
   document.body.appendChild(overlay);
 
   // Debug log overlay creation
@@ -127,6 +149,7 @@
 
   // State management
   let isDragging = false;
+  let isResizing = false;
   let offsetX = 0;
   let offsetY = 0;
   let currentSession = null;
@@ -137,14 +160,27 @@
 
   // Event handler functions
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    overlay.style.left = `${e.clientX - offsetX}px`;
-    overlay.style.top = `${e.clientY - offsetY}px`;
-    overlay.style.position = "fixed";
+    if (isResizing) {
+      const dx = e.clientX - lastX;
+      if (isResizing === 'left') {
+        const newWidth = overlay.offsetWidth - dx;
+        overlay.style.width = `${newWidth}px`;
+        overlay.style.left = `${overlay.offsetLeft + dx}px`;
+      } else if (isResizing === 'right') {
+        const newWidth = overlay.offsetWidth + dx;
+        overlay.style.width = `${newWidth}px`;
+      }
+      lastX = e.clientX;
+    } else if (isDragging) {
+      overlay.style.left = `${e.clientX - offsetX}px`;
+      overlay.style.top = `${e.clientY - offsetY}px`;
+      overlay.style.position = "fixed";
+    }
   };
 
   const handleMouseUp = () => {
     isDragging = false;
+    isResizing = false;
   };
 
   const handleDocumentClick = (e) => {
@@ -619,6 +655,23 @@
     offsetX = e.clientX - overlay.getBoundingClientRect().left;
     offsetY = e.clientY - overlay.getBoundingClientRect().top;
     overlay.style.transition = "none";
+    e.preventDefault();
+  });
+
+  // Resizing functionality
+  const resizerLeft = overlay.querySelector('#resizer-left');
+  const resizerRight = overlay.querySelector('#resizer-right');
+  let lastX = 0;
+
+  resizerLeft.addEventListener('mousedown', (e) => {
+    isResizing = 'left';
+    lastX = e.clientX;
+    e.preventDefault();
+  });
+
+  resizerRight.addEventListener('mousedown', (e) => {
+    isResizing = 'right';
+    lastX = e.clientX;
     e.preventDefault();
   });
 

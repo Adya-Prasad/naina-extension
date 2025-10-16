@@ -7,6 +7,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   const noteBody = document.getElementById("note-body");
   const closeButton = document.querySelector(".close-button");
 
+  // Create confirmation modal dynamically
+  const confirmModal = document.createElement("div");
+  confirmModal.id = "confirm-modal";
+  confirmModal.className = "modal";
+  confirmModal.innerHTML = `
+    <div class="confirm-box">
+      <h3>Delete Confirmation</h3>
+      <p>Are you sure you want to delete this note?</p>
+      <div class="confirm-btns">
+        <button id="confirm-delete" class="confirm-delete">Delete</button>
+        <button id="cancel-delete" class="cancel-delete">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(confirmModal);
+
+  // References inside confirm modal
+  const confirmDeleteBtn = confirmModal.querySelector("#confirm-delete");
+  const cancelDeleteBtn = confirmModal.querySelector("#cancel-delete");
+
+  // Track which note is being deleted
+  let pendingDeleteNoteId = null;
+
   // --- Load Notes Function ---
   async function loadNotes() {
     const { notes = [] } = await chrome.storage.local.get("notes");
@@ -42,28 +65,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.classList.add("active");
       });
 
-      // --- Delete button: remove note ---
-      card.querySelector(".delete-btn").addEventListener("click", async () => {
-        const { notes } = await chrome.storage.local.get("notes");
-        const updated = notes.filter((n) => n.id !== note.id);
-        await chrome.storage.local.set({ notes: updated });
-        loadNotes(); // Refresh display
+      // --- Delete button: show confirm modal ---
+      card.querySelector(".delete-btn").addEventListener("click", () => {
+        pendingDeleteNoteId = note.id;
+        confirmModal.classList.add("active");
       });
 
       container.appendChild(card);
     });
   }
 
-  // --- Close modal ---
+  // --- Confirm delete logic ---
+  confirmDeleteBtn.addEventListener("click", async () => {
+    if (pendingDeleteNoteId) {
+      const { notes } = await chrome.storage.local.get("notes");
+      const updated = notes.filter((n) => n.id !== pendingDeleteNoteId);
+      await chrome.storage.local.set({ notes: updated });
+      pendingDeleteNoteId = null;
+      confirmModal.classList.remove("active");
+      loadNotes();
+    }
+  });
+
+  // --- Cancel delete ---
+  cancelDeleteBtn.addEventListener("click", () => {
+    pendingDeleteNoteId = null;
+    confirmModal.classList.remove("active");
+  });
+
+  // --- Close modals ---
   closeButton.addEventListener("click", () => {
     modal.classList.remove("active");
   });
 
-  // Close modal if clicked outside note-page
+  // Close any modal if clicked outside
   window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("active");
-    }
+    if (e.target === modal) modal.classList.remove("active");
+    if (e.target === confirmModal) confirmModal.classList.remove("active");
   });
 
   // Initial load
