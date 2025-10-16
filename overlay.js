@@ -75,7 +75,7 @@
             <svg width="20px" height="20px" viewBox="0 0 20 20"><path d="M7.41 9l2.24 2.24-.83 2L6 10.4l-3.3 3.3-1.4-1.42L4.58 9l-.88-.88c-.53-.53-1-1.3-1.3-2.12h2.2c.15.28.33.53.51.7l.89.9.88-.88C7.48 6.1 8 4.84 8 4H0V2h5V0h2v2h5v2h-2c0 1.37-.74 3.15-1.7 4.12L7.4 9zm3.84 8L10 20H8l5-12h2l5 12h-2l-1.25-3h-5.5zm.83-2h3.84L14 10.4 12.08 15z" fill="currentColor"/></svg>
           </div>
           <div id="saved-collection" title="Your saved collection">
-           <svg viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+           <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
         </div>
       </footer>
@@ -517,9 +517,9 @@
     });
 
     // Footer “Saved Collection” button
-    savedCollectionBtn.addEventListener("click", () => {
-      chrome.runtime.sendMessage({ action: "openCollectionPage" });
-    });
+    // savedCollectionBtn.addEventListener("click", () => {
+    //   chrome.runtime.sendMessage({ action: "openCollectionPage" });
+    // });
 
     // Dyslexia friendly mode
     dyslexiaBtn.addEventListener("click", () => {
@@ -559,6 +559,7 @@
       langList.style.fontFamily = isDyslexiaMode ?
         'OpenDyslexic, "Comic Sans MS", "Comic Sans" ' :
         '"Segoe UI", Roboto, Arial, sans-serif';
+      savedCollectionBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
     });
 
     // Translate functionality
@@ -617,6 +618,11 @@
     if (translateBtn) {
       translateBtn.addEventListener('click', translate);
     }
+
+    // Footer “Saved Collection” button
+    savedCollectionBtn.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ action: "openCollectionPage" });
+    });
 
   }
 

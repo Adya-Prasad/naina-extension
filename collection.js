@@ -69,3 +69,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initial load
   loadNotes();
 });
+  // // --- Open Chat Popup Window ---
+  // const openChatBtn = document.getElementById("open-chat");
+  // if (openChatBtn) {
+  //   openChatBtn.addEventListener("click", () => {
+  //     const popupUrl = chrome.runtime.getURL("overlay.html");
+  //     chrome.windows.create({
+  //       url: popupUrl,
+  //       type: "popup",
+  //       width: 420,
+  //       height: 600
+  //     });
+  //   });
+  // }
