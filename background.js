@@ -48,6 +48,13 @@ async function toggleOverlay(tab) {
   }
 }
 
+// Listener for keyboard shortcut
+chrome.commands.onCommand.addListener(async (command, tab) => {
+  if (command === "toggle-naina") {
+    await toggleOverlay(tab);
+  }
+});
+
 // Listener for browser action
 chrome.action.onClicked.addListener(async (tab) => {
   await toggleOverlay(tab);

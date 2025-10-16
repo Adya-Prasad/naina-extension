@@ -115,7 +115,6 @@
   overlay.style.zIndex = "2147483647";
   overlay.style.overflow = "hidden";
   overlay.style.pointerEvents = "auto";
-  overlay.style.userSelect = "none";
   overlay.style.display = "flex";
   overlay.style.flexDirection = "column";
   overlay.style.boxSizing = "border-box";
@@ -178,50 +177,67 @@
     }
   }
 
-  // In built local markdown renderer function
-  function renderMarkdown(text) {
-    let html = text
-      // Headers
-      .replace(/^### (.*$)/gim, '<h3 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2 style="margin: 1px 0px; font-size: 18x; font-weight: 600;">$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1 style="margin: 1px 0px; font-size: 19px; font-weight: 700;">$1</h1>')
+  // In-built local markdown renderer
+function renderMarkdown(text) {
+  if (!text) return "";
 
-      // Code blocks
-      .replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 1px 0; overflow-x: auto;"><code style="color: #e4f6ffff; font-family: \'Courier New\', monospace; font-size: 14px;">$1</code></pre>')
+  let html = text
+    // Headers
+    .replace(/^### (.*$)/gim, '<h3 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 style="margin: 1px 0px; font-size: 19px; font-weight: 700;">$1</h1>')
 
-      // Bold text
-      .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold;">$1</strong>')
-      .replace(/__(.*?)__/g, '<strong style="font-weight: bold;">$1</strong>')
+    // Code blocks (handles ```json, ```js, etc.)
+    .replace(
+      /```(?:\w+)?\n([\s\S]*?)```/g,
+      '<pre style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 1px 0; overflow-x: auto;"><code style="color: #e4f6ffff; font-family: \'Courier New\', monospace; font-size: 14px;">$1</code></pre>'
+    )
 
-      // Italic text
-      .replace(/\*(.*?)\*/g, '<em style="font-style: italic;">$1</em>')
-      .replace(/_(.*?)_/g, '<em style="font-style: italic;">$1</em>')
+    // Bold text
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold;">$1</strong>')
+    .replace(/__(.*?)__/g, '<strong style="font-weight: bold;">$1</strong>')
 
-      // Inline code
-      .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.3); padding: 3px 4px; border-radius: 3px; color: #f0f0f0; font-family: \'Courier New\', monospace; font-size: 13px;">$1</code>')
-      
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:rgba(13, 123, 250, 1); text-decoration: underline;" target="_blank">$1</a>');
+    // Italic text
+    .replace(/\*(.*?)\*/g, '<em style="font-style: italic;">$1</em>')
+    .replace(/_(.*?)_/g, '<em style="font-style: italic;">$1</em>')
 
-    // Lists (more robust handling)3
-    // Unordered lists
-    html = html.replace(/((?:^\s*[\*\-]\s+.*\n?)+)/gm, (match) => {
-      const items = match.trim().split('\n').map(item => `<li>${item.replace(/^\s*[\*\-]\s+/, '')}</li>`).join('');
-      return `<ul>${items}</ul>`;
-    });
+    // Inline code
+    .replace(
+      /`([^`]+)`/g,
+      '<code style="background: rgba(0,0,0,0.3); padding: 3px 4px; border-radius: 3px; color: #f0f0f0; font-family: \'Courier New\', monospace; font-size: 13px;">$1</code>'
+    )
 
-    // Ordered lists
-    html = html.replace(/((?:^\s*\d+\.\s+.*\n?)+)/gm, (match) => {
-      const items = match.trim().split('\n').map(item => `<li>${item.replace(/^\s*\d+\.\s+/, '')}</li>`).join('');
-      return `<ol>${items}</ol>`;
-    });
+    // Links
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" style="color:rgba(13, 123, 250, 1); text-decoration: underline;" target="_blank">$1</a>'
+    );
 
-    // Line breaks
-    html = html.replace(/\n/g, '<br>');
+  // Unordered lists (*, -, +)
+  html = html.replace(/((?:^\s*[\*\-\+]\s+.*\n?)+)/gm, match => {
+    const items = match
+      .trim()
+      .split('\n')
+      .map(item => `<li>${item.replace(/^\s*[\*\-\+]\s+/, '')}</li>`)
+      .join('');
+    return `<ul>${items}</ul>`;
+  });
 
-    return html;
-  }
+  // Ordered lists (1., 2., ...)
+  html = html.replace(/((?:^\s*\d+\.\s+.*\n?)+)/gm, match => {
+    const items = match
+      .trim()
+      .split('\n')
+      .map(item => `<li>${item.replace(/^\s*\d+\.\s+/, '')}</li>`)
+      .join('');
+    return `<ol>${items}</ol>`;
+  });
 
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+
+  return html;
+}
   // Utility functions
   function showMessage(message, type = "info") {
     const messageClass = type === "error" ? "error-message" :
@@ -403,6 +419,7 @@
       // Display response
       let fullResponse = "";
       output.innerHTML = '<div id="success-message"></div>';
+      // output.innerHTML = '<div class="success-message"></div>';
       const successMessageDiv = output.querySelector('#success-message');
 
       for await (const chunk of stream) {
@@ -465,12 +482,12 @@
         const voices = speechSynthesis.getVoices();
         let desiredVoice = voices.find(v => v.name.toLowerCase().includes('zira'));
         if (!desiredVoice) {
-            desiredVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+          desiredVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
         }
         if (desiredVoice) {
-            utterance.voice = desiredVoice;
+          utterance.voice = desiredVoice;
         } else {
-            console.log("Zira or any other English female voice not found. Using default voice.");
+          console.log("Zira or any other English female voice not found. Using default voice.");
         }
         speechSynthesis.speak(utterance);
         console.log("Read out (voice feature) use!")
@@ -479,24 +496,24 @@
       // Ensure voices are loaded before speaking
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
-          speak();
+        speak();
       } else {
-          speechSynthesis.onvoiceschanged = () => {
-              speak();
-              speechSynthesis.onvoiceschanged = null;
-          };
+        speechSynthesis.onvoiceschanged = () => {
+          speak();
+          speechSynthesis.onvoiceschanged = null;
+        };
       }
     });
 
     // Save Note feature
     saveNoteBtn.addEventListener("click", async () => {
-      if (! UserInputCopy || !OutputResponseCopy){
+      if (!UserInputCopy || !OutputResponseCopy) {
         console.log("No input and output response detected");
         showMessage(`No input / output response detected. Output response: ${OutputResponseCopy || "empty"}. Ask something first...`);
         return;
-      } 
+      }
       console.log("Saving note initiated...")
-        const note = {
+      const note = {
         id: Date.now(),
         input: UserInputCopy.trim(),
         output: OutputResponseCopy.trim(),
@@ -515,11 +532,6 @@
         showMessage("Failed to save note. Check console for details.");
       }
     });
-
-    // Footer “Saved Collection” button
-    // savedCollectionBtn.addEventListener("click", () => {
-    //   chrome.runtime.sendMessage({ action: "openCollectionPage" });
-    // });
 
     // Dyslexia friendly mode
     dyslexiaBtn.addEventListener("click", () => {
@@ -572,12 +584,14 @@
 
       const targetLang = overlay.querySelector("#to-lang").value;
       console.log("Trying to initiate translation");
+      searchBtn.disabled = true;
+      searchBtn.textContent = "Working...";
 
       try {
         // check availability first
         const availability = await Translator.availability({
           sourceLanguage: 'en', // text will be mostly in english, show no auto-detection
-          targetLanguage: targetLang
+          targetLanguage: targetLang,
         });
         // Create translator and monitor download
         const translator = await Translator.create({
@@ -589,7 +603,7 @@
             });
           },
         });
-        
+
         // Replace newlines with a placeholder before translation
         const textToTranslate = outputText.replace(/\n/g, '<br>');
         const stream = await translator.translateStreaming(textToTranslate);
@@ -606,6 +620,14 @@
 
         // Store the final response with newlines restored
         OutputResponseCopy = fullResponse.replace(/ §NL§ /g, '\n');
+
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = `
+          <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+          <path d="M9.91158 12H7.45579H4L2.02268 4.13539C2.0111 4.0893 2.00193 4.04246 2.00046 3.99497C1.97811 3.27397 2.77209 2.77366 3.46029 3.10388L22 12L3.46029 20.8961C2.77983 21.2226 1.99597 20.7372 2.00002 20.0293C2.00038 19.9658 2.01455 19.9032 2.03296 19.8425L3.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>&nbsp; Go
+        `;
+
 
         // Clean up (optional)
         if (translator.destroy) translator.destroy();
