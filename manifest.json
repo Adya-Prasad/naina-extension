@@ -1,19 +1,33 @@
 {
   "manifest_version": 3,
   "name": "Naina Assistant",
-  "description": "Hyrbid AI Agent Powered by Chrome Built-in AI Gemini Nano. Work Online and Offline both.",
+  "description": "Hybrid AI Agent powered by Chrome Built-in AI Gemini Nano. Works both online and offline.",
   "version": "1.0",
+
   "icons": {
     "16": "images/naina-icon.png",
     "32": "images/naina-icon.png",
     "48": "images/naina-icon.png",
     "128": "images/naina-icon.png"
   },
-  "permissions": ["scripting", "activeTab", "tabs", "contextMenus"],
-  "host_permissions": ["<all_urls>", "file:///*"],
+
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs",
+    "contextMenus",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "<all_urls>",
+    "file:///*"
+  ],
+
   "background": {
     "service_worker": "background.js"
   },
+
   "action": {
     "default_title": "Naina Assistant",
     "default_icon": {
@@ -23,6 +37,7 @@
       "128": "images/naina-icon.png"
     }
   },
+
   "commands": {
     "toggle-naina": {
       "suggested_key": {
@@ -31,10 +46,25 @@
       "description": "Toggle the Naina AI overlay"
     }
   },
+
   "content_scripts": [
     {
       "matches": ["<all_urls>", "file:///*"],
-      "js": ["content.js"]
+      "js": ["content_script.js"],
+      "all_frames": true
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "overlay.html",
+        "collection.html",
+        "collection.js",
+        "collection.css",
+        "images/*"
+      ],
+      "matches": ["<all_urls>"]
     }
   ]
 }

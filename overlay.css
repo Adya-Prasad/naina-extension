@@ -36,6 +36,7 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* search bar */
 .search-box {
   display: flex;
   gap: 8px;
@@ -62,7 +63,7 @@
   color: var(--placeholder-color);
 }
 
-/* send button */
+/* input send button */
 #ai-search {
   display: inline-flex;
   padding: 5px 9px;
@@ -80,7 +81,6 @@
   transform: scale(0.88);
 }
 
-/* Button states */
 #ai-search:disabled {
   cursor: not-allowed;
   transform: scale(1);
@@ -90,19 +90,20 @@
   background: #9f9fa19c;
 }
 
-/* output */
+/* output div */
 #naina-output {
-  background: #79787180;
+  background: #82828788;
   border-radius: 8px;
   padding: 12px;
-  font-size: 17px;
+  font-size: 16px;
   overflow-y: auto;
   color: #ffffff;
   backdrop-filter: blur(4px);
   line-height: 1.5;
   flex: 1;
-  min-height: 0;
+  min-height: 50;
   margin-bottom: 5px;
+
 }
 
 /* Scrollbar styling */
@@ -111,31 +112,30 @@
 }
 
 #naina-output::-webkit-scrollbar-track {
-  background: rgba(129, 129, 129, 0.411);
+  background: rgba(127, 128, 129, 0.411);
   border-radius: 3px;
   padding: 0.5px;
 }
 
 #naina-output::-webkit-scrollbar-thumb {
-  background: rgba(54, 55, 56, 0.836);
+  background: rgba(117, 118, 121, 0.836);
   border-radius: 3px;
 }
 
 #naina-output::-webkit-scrollbar-thumb:hover {
-  background: rgba(112, 116, 141, 0.842);
+  background: rgba(117, 118, 121, 0.932);
 }
 
 .success-message {
   color: #ffffff;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-size: 17px;
+  font-size: 16px;
   background: none;
 }
 
 .error-message {
   color: #e72c2c;
-  font-size: 13px;
 }
 
 .info-message {
@@ -143,7 +143,6 @@
   white-space: pre-wrap;
   word-wrap: break-word;
   color: #f0f0f0;
-  font-size: 13px;
 }
 
 /* Footer */
@@ -211,4 +210,15 @@ option{
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+} */
+
+/* #naina-output ul {
+  padding-left: 20px;
+  margin-bottom: none;
+}
+
+#naina-output li {
+  list-style-type: disc;
+  display: list-item;
+  margin: none;
 } */

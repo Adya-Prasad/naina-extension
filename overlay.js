@@ -58,6 +58,7 @@
               <option value="ar" title="Arabic">ar</option>
               <option value="bn" title="Bangla">bn</option>
               <option value="zh" title="Chinese">zh</option>
+              <option value="en" title="English">en</option>
               <option value="de" title="German">de</option>
               <option value="hi" title="Hindi" selected>hi</option>
               <option value="it" title="Italian">it</option>
@@ -73,7 +74,6 @@
           <div id="translate" title="translate the text">
             <svg width="20px" height="20px" viewBox="0 0 20 20"><path d="M7.41 9l2.24 2.24-.83 2L6 10.4l-3.3 3.3-1.4-1.42L4.58 9l-.88-.88c-.53-.53-1-1.3-1.3-2.12h2.2c.15.28.33.53.51.7l.89.9.88-.88C7.48 6.1 8 4.84 8 4H0V2h5V0h2v2h5v2h-2c0 1.37-.74 3.15-1.7 4.12L7.4 9zm3.84 8L10 20H8l5-12h2l5 12h-2l-1.25-3h-5.5zm.83-2h3.84L14 10.4 12.08 15z" fill="currentColor"/></svg>
           </div>
-          
           <div id="saved-collection" title="Your saved collection">
            <svg viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
@@ -133,7 +133,8 @@
   let currentSession = null;
   let pageContext = null;
   let isDyslexiaMode = false;
-  let lastUserInput = "";
+  let UserInputCopy = "";
+  let OutputResponseCopy = "";
 
   // Event handler functions
   const handleMouseMove = (e) => {
@@ -179,11 +180,14 @@
 
   // In built local markdown renderer function
   function renderMarkdown(text) {
-    return text
+    let html = text
       // Headers
-      .replace(/^### (.*$)/gim, '<h3 style="margin: 5px 0 6px 0; font-size: 17px; font-weight: 600;">$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2 style="margin: 5px 0 6px 0; font-size: 18x; font-weight: 600;">$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1 style="margin: 5px 0 7px 0; font-size: 19px; font-weight: 700;">$1</h1>')
+      .replace(/^### (.*$)/gim, '<h3 style="margin: 1px 0px; font-size: 18px; font-weight: 600;">$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2 style="margin: 1px 0px; font-size: 18x; font-weight: 600;">$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1 style="margin: 1px 0px; font-size: 19px; font-weight: 700;">$1</h1>')
+
+      // Code blocks
+      .replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 1px 0; overflow-x: auto;"><code style="color: #e4f6ffff; font-family: \'Courier New\', monospace; font-size: 14px;">$1</code></pre>')
 
       // Bold text
       .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold;">$1</strong>')
@@ -193,26 +197,29 @@
       .replace(/\*(.*?)\*/g, '<em style="font-style: italic;">$1</em>')
       .replace(/_(.*?)_/g, '<em style="font-style: italic;">$1</em>')
 
-      // Code blocks
-      .replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 1px 0; overflow-x: auto;"><code style="color: #e4f6ffff; font-family: \'Courier New\', monospace; font-size: 14px;">$1</code></pre>')
-
       // Inline code
-      .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 3px; color: #f0f0f0; font-family: \'Courier New\', monospace; font-size: 13px;">$1</code>')
-
-      // Lists
-      .replace(/^\* (.*$)/gim, '<li style="margin: 2px 0; padding-left: 4px;">$1</li>')
-      .replace(/^- (.*$)/gim, '<li style="margin: 2px 0; padding-left: 4px;">$1</li>')
-      .replace(/^(\d+)\. (.*$)/gim, '<li style="margin: 2px 0; padding-left: 4px;">$2</li>')
-
-      // Wrap consecutive list items in ul
-      .replace(/(<li style="margin: 3px 0; padding-left: 5px;">.*<\/li>)/gs, '<ul style="margin: 4px 0; padding-left: 10px;">$1</ul>')
-
+      .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.3); padding: 3px 4px; border-radius: 3px; color: #f0f0f0; font-family: \'Courier New\', monospace; font-size: 13px;">$1</code>')
+      
       // Links
-      .replace(/ \[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:rgb(175, 213, 255); text-decoration: underline;" target="_blank">$1</a>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:rgba(13, 123, 250, 1); text-decoration: underline;" target="_blank">$1</a>');
 
-      // Line breaks
-      .replace(/\n\n/g, '<br  style="margin-bottom: 4px;">')
-      .replace(/\n/g, '<br>');
+    // Lists (more robust handling)3
+    // Unordered lists
+    html = html.replace(/((?:^\s*[\*\-]\s+.*\n?)+)/gm, (match) => {
+      const items = match.trim().split('\n').map(item => `<li>${item.replace(/^\s*[\*\-]\s+/, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+
+    // Ordered lists
+    html = html.replace(/((?:^\s*\d+\.\s+.*\n?)+)/gm, (match) => {
+      const items = match.trim().split('\n').map(item => `<li>${item.replace(/^\s*\d+\.\s+/, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    });
+
+    // Line breaks
+    html = html.replace(/\n/g, '<br>');
+
+    return html;
   }
 
   // Utility functions
@@ -304,7 +311,7 @@
         content: extractMainContent(),
         timestamp: new Date().toISOString()
       };
-      console.log("Page context extracted:", context);
+      console.log("Page context extracted!");
       return context;
     } catch (error) {
       console.error("Failed to extract page context:", error);
@@ -342,7 +349,7 @@
       showMessage("Please enter a question or prompt.", "error");
       return;
     }
-    lastUserInput = userInput;
+    UserInputCopy = userInput;
 
     // Show loading state
     searchBtn.disabled = true;
@@ -402,6 +409,7 @@
         fullResponse += chunk;
         successMessageDiv.innerHTML = renderMarkdown(fullResponse);
       }
+      OutputResponseCopy = fullResponse;
 
       // Clear input
       input.value = "";
@@ -433,57 +441,84 @@
     const dyslexiaBtn = overlay.querySelector("#dyslexia-friendly");
     const langList = overlay.querySelector("#to-lang");
     const translateBtn = overlay.querySelector("#translate");
-    const collectionBtn = overlay.querySelector("#saved-collection");
+    const savedCollectionBtn = overlay.querySelector("#saved-collection");
 
     // Read out (speak) functionality
     readOutBtn.addEventListener("click", () => {
       const outputText = output.textContent;
-      if (outputText && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(outputText);
-        const voices = speechSynthesis.getVoices();
-        const femaleVoice = voices.find(v => v.name.toLowerCase().includes('zira'));
-        if (femaleVoice) {
-          utterance.voice = femaleVoice;
-        }
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        speechSynthesis.speak(utterance);
-      }
-    });
-
-    // Save Note functionality
-    saveNoteBtn.addEventListener("click", () => {
-      const outputText = output.textContent.trim();
-
-      if (!lastUserInput || !outputText || outputText === "Ready to help! Ask me anything...") {
-        showMessage("Cannot save an empty note. Please ask a question first.", "error");
-        setTimeout(() => {
-          if (output.textContent === "Cannot save an empty note. Please ask a question first.") {
-            showMessage("Ready to help! Ask me anything...", "info");
-          }
-        }, 3000);
+      if (!outputText || !('speechSynthesis' in window)) {
         return;
       }
 
-      const note = {
-        id: `note_${Date.now()}`,
-        input: lastUserInput,
-        output: outputText,
-        timestamp: Date.now()
+      // Toggle functionality: if speaking, cancel and exit.
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(outputText);
+      utterance.rate = 0.8;
+      utterance.pitch = 1.3;
+
+      // Priority for female voice
+      const speak = () => {
+        const voices = speechSynthesis.getVoices();
+        let desiredVoice = voices.find(v => v.name.toLowerCase().includes('zira'));
+        if (!desiredVoice) {
+            desiredVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+        }
+        if (desiredVoice) {
+            utterance.voice = desiredVoice;
+        } else {
+            console.log("Zira or any other English female voice not found. Using default voice.");
+        }
+        speechSynthesis.speak(utterance);
+        console.log("Read out (voice feature) use!")
       };
 
-      localStorage.setItem(note.id, JSON.stringify(note));
-      showMessage("Note saved!", "success");
-      setTimeout(() => {
-        if (output.textContent === "Note saved!") {
-          output.innerHTML = `<div class="status-message" id="output-text">${outputText}</div>`;
-        }
-      }, 2000);
+      // Ensure voices are loaded before speaking
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+          speak();
+      } else {
+          speechSynthesis.onvoiceschanged = () => {
+              speak();
+              speechSynthesis.onvoiceschanged = null;
+          };
+      }
     });
 
-    // Saved Collection functionality
-    collectionBtn.addEventListener("click", () => {
-      window.open(chrome.runtime.getURL("collection.html"), '_blank');
+    // Save Note feature
+    saveNoteBtn.addEventListener("click", async () => {
+      if (! UserInputCopy || !OutputResponseCopy){
+        console.log("No input and output response detected");
+        showMessage(`No input / output response detected. Output response: ${OutputResponseCopy || "empty"}. Ask something first...`);
+        return;
+      } 
+      console.log("Saving note initiated...")
+        const note = {
+        id: Date.now(),
+        input: UserInputCopy.trim(),
+        output: OutputResponseCopy.trim(),
+        timestamp: new Date().toLocaleString(),
+      };
+
+      try {
+        const { notes = [] } = await chrome.storage.local.get("notes");
+        notes.push(note);
+        await chrome.storage.local.set({ notes });
+
+        showMessage("Note saved successfully!");
+        console.log("Note saved:", note);
+      } catch (error) {
+        console.error("Error saving note:", error);
+        showMessage("Failed to save note. Check console for details.");
+      }
+    });
+
+    // Footer “Saved Collection” button
+    savedCollectionBtn.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ action: "openCollectionPage" });
     });
 
     // Dyslexia friendly mode
@@ -524,13 +559,11 @@
       langList.style.fontFamily = isDyslexiaMode ?
         'OpenDyslexic, "Comic Sans MS", "Comic Sans" ' :
         '"Segoe UI", Roboto, Arial, sans-serif';
-
-      collectionBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
     });
 
     // Translate functionality
     async function translate() {
-      const outputText = output.textContent;
+      const outputText = OutputResponseCopy; // Use the stored markdown response
       if (!outputText) {
         showMessage("No text to translate.", "info");
         return;
@@ -539,16 +572,12 @@
       const targetLang = overlay.querySelector("#to-lang").value;
       console.log("Trying to initiate translation");
 
-      showMessage("Translating...", "info");
-
       try {
         // check availability first
         const availability = await Translator.availability({
           sourceLanguage: 'en', // text will be mostly in english, show no auto-detection
           targetLanguage: targetLang
         });
-        console.log('Availability: ' + JSON.stringify(availability) + '\n');
-
         // Create translator and monitor download
         const translator = await Translator.create({
           sourceLanguage: 'en',
@@ -559,8 +588,23 @@
             });
           },
         });
-        const translatedResult = await translator.translate(outputText);
-        output.innerHTML = translatedResult;
+        
+        // Replace newlines with a placeholder before translation
+        const textToTranslate = outputText.replace(/\n/g, '<br>');
+        const stream = await translator.translateStreaming(textToTranslate);
+        let fullResponse = "";
+        output.innerHTML = '<div id="success-message"></div>';
+        const successMessageDiv = output.querySelector('#success-message');
+
+        for await (const chunk of stream) {
+          fullResponse += chunk;
+          // Replace placeholder back to newline before rendering
+          const responseToRender = fullResponse.replace(/ §NL§ /g, '\n');
+          successMessageDiv.innerHTML = renderMarkdown(responseToRender);
+        }
+
+        // Store the final response with newlines restored
+        OutputResponseCopy = fullResponse.replace(/ §NL§ /g, '\n');
 
         // Clean up (optional)
         if (translator.destroy) translator.destroy();
@@ -583,10 +627,10 @@
     try {
       pageContext = await extractPageContext();
       if (pageContext) {
-        console.log("Page context loaded:", pageContext.title);
+        console.log("Page context loaded, title is:", pageContext.title);
 
       } else {
-        console.log("Page context NOT loaded, will answer wihtout context");
+        console.log("Page context NOT loaded, will answer without context");
       }
     } catch (error) {
       console.error("Failed to initialize page context:", error);

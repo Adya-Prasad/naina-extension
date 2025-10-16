@@ -5,22 +5,22 @@ async function toggleOverlay(tab) {
   try {
     const url = tab?.url || "";
     
-    // Only inject on http(s) pages to prevent chrome:// URL errors
-    if (!/^https?:\/\//i.test(url)) {
-      console.warn("Refusing to inject into this page (not http/https):", url);
+    // Only inject on http(s) and file pages to prevent chrome:// URL errors
+    if (!/^https?:\/\/|^file:\/\//i.test(url)) {
+      console.warn("Refusing to inject into this page (not http/https or file):", url);
       return;
     }
 
     // Check if overlay already exists
     const results = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
+      target: { tabId: tab.id, allFrames: true },
       func: () => !!document.getElementById("naina-assistant-ui")
     });
 
-    if (results[0]?.result) {
-      // Toggle existing overlay
+    if (results.some(frameResult => frameResult.result)) {
+      // Toggle existing overlay in all frames where it exists
       await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
+        target: { tabId: tab.id, allFrames: true },
         func: () => {
           const overlay = document.getElementById("naina-assistant-ui");
           if (overlay) {
@@ -33,13 +33,13 @@ async function toggleOverlay(tab) {
 
     // Insert CSS first
     await chrome.scripting.insertCSS({
-      target: { tabId: tab.id },
+      target: { tabId: tab.id, allFrames: true },
       files: ["overlay.css"]
     });
 
     // Inject overlay JS
     await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
+      target: { tabId: tab.id, allFrames: true },
       files: ["overlay.js"]
     });
 
@@ -53,22 +53,21 @@ chrome.action.onClicked.addListener(async (tab) => {
   await toggleOverlay(tab);
 });
 
-// Listener for keyboard shortcut
-chrome.commands.onCommand.addListener(async (command) => {
-  if (command === "toggle-naina") {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab && tab.id) {
-      await toggleOverlay(tab);
-    }
+// Listener 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "openCollectionPage") {
+    const collectionUrl = chrome.runtime.getURL("collection.html");
+    chrome.tabs.create({ url: collectionUrl });
   }
 });
+
 
 // Listener for context menu
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "toggle-naina-context",
     title: "Naina Assistant",
-    contexts: ["page"]
+    contexts: ["page", "frame"]
   });
 });
 

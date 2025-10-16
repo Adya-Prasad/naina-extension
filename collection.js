@@ -1,50 +1,71 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const notesCollection = document.getElementById('notes-collection');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody = document.getElementById('modal-body');
-    const closeButton = document.querySelector('.close-button');
+document.addEventListener("DOMContentLoaded", async () => {
 
-    const notes = Object.keys(localStorage)
-        .filter(key => key.startsWith('note_'))
-        .map(key => JSON.parse(localStorage.getItem(key)));
+  // DOM Elements
+  const container = document.getElementById("notes-collection");
+  const modal = document.getElementById("modal");
+  const noteTitle = document.getElementById("note-title");
+  const noteBody = document.getElementById("note-body");
+  const closeButton = document.querySelector(".close-button");
 
-    if (notes.length === 0) {
-        notesCollection.innerHTML = '<p>You have no saved notes.</p>';
-        return;
+  // --- Load Notes Function ---
+  async function loadNotes() {
+    const { notes = [] } = await chrome.storage.local.get("notes");
+    container.innerHTML = "";
+
+    if (!notes.length) {
+      container.innerHTML = `
+        <p>Sorry! No saved notes found. Please chat with Naina first...</p>
+      `;
+      return;
     }
 
-    notes.sort((a, b) => b.timestamp - a.timestamp);
+    // Show most recent first
+    [...notes].reverse().forEach((note) => {
+      const card = document.createElement("div");
+      card.className = "note-card";
+      card.innerHTML = `
+        <h2><i>Q:</i> ${note.input.slice(0, 50)}...</h2>
+        <p class="label">${new Date(note.timestamp).toLocaleString()}</p>
+        <div class="btns">
+          <button class="view-btn">View</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      `;
 
-    notes.forEach(note => {
-        const card = document.createElement('div');
-        card.className = 'note-card';
-        card.dataset.noteId = note.id;
-
-        const title = note.input.substring(0, 20) + (note.input.length > 20 ? '...' : '');
-        const snippet = note.output.substring(0, 50) + (note.output.length > 50 ? '...' : '');
-
-        card.innerHTML = `
-            <h3>${title}</h3>
-            <p>${snippet}</p>
+      // --- View button: open modal ---
+      card.querySelector(".view-btn").addEventListener("click", () => {
+        noteTitle.textContent = `Input: ${note.input}`;
+        noteBody.innerHTML = `
+          <p class="label"><b>Saved on:</b> ${note.timestamp}</p>
+          <p>${note.output}</p>
         `;
+        modal.classList.add("active");
+      });
 
-        card.addEventListener('click', () => {
-            modalTitle.textContent = note.input;
-            modalBody.textContent = note.output;
-            modal.style.display = 'block';
-        });
+      // --- Delete button: remove note ---
+      card.querySelector(".delete-btn").addEventListener("click", async () => {
+        const { notes } = await chrome.storage.local.get("notes");
+        const updated = notes.filter((n) => n.id !== note.id);
+        await chrome.storage.local.set({ notes: updated });
+        loadNotes(); // Refresh display
+      });
 
-        notesCollection.appendChild(card);
+      container.appendChild(card);
     });
+  }
 
-    closeButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+  // --- Close modal ---
+  closeButton.addEventListener("click", () => {
+    modal.classList.remove("active");
+  });
 
-    window.addEventListener('click', (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    });
+  // Close modal if clicked outside note-page
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("active");
+    }
+  });
+
+  // Initial load
+  loadNotes();
 });

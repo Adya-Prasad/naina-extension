@@ -53,7 +53,7 @@ A Chrome extension that provides AI assistance using Chrome's built-in Gemini Na
 ```
 ├── manifest.json          # Extension configuration
 ├── background.js          # Service worker for extension logic
-├── content.js            # Content script for page interaction
+├── content_script.js            # Content script for page interaction
 ├── overlay.js            # Main overlay UI and AI functionality
 ├── overlay.css           # Styling for the overlay
 ├── naina-icon.png        # Extension icon
