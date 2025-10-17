@@ -61,8 +61,8 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 // Listener 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "openCollectionPage") {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.action === "openCollectionPage") {
     const collectionUrl = chrome.runtime.getURL("collection.html");
     chrome.tabs.create({ url: collectionUrl });
   }

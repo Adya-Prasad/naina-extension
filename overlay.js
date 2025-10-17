@@ -1,10 +1,11 @@
 (() => {
-  'use strict';
+  "use strict";
 
   // Check if overlay already exists and toggle it
   const existing = document.getElementById("naina-assistant-ui");
   if (existing) {
-    existing.style.display = existing.style.display === "none" ? "block" : "none";
+    existing.style.display =
+      existing.style.display === "none" ? "block" : "none";
     return;
   }
 
@@ -25,7 +26,7 @@
           </button>
       </div>
       <div id="naina-output">
-        <div class="status-message" id="output-text">Ready to help! Ask me anything...</div>
+        <div class="status-msg" id="output-text">Ready to help! Ask me anything...</div>
       </div>
       <footer id="footer">
         <div id="features">
@@ -59,7 +60,7 @@
               <option value="ar" title="Arabic">ar</option>
               <option value="bn" title="Bangla">bn</option>
               <option value="zh" title="Chinese">zh</option>
-              <option value="en" title="English">en</option>
+              <option value="fr" title="French">fr</option>
               <option value="de" title="German">de</option>
               <option value="hi" title="Hindi" selected>hi</option>
               <option value="it" title="Italian">it</option>
@@ -69,7 +70,6 @@
               <option value="es" title="Spanish">es</option>
               <option value="ta" title="Tamil">ta</option>
               <option value="te" title="Telugu">te</option>
-              <option value="fr" title="French">fr</option>
             </select>
           </div>
           <div id="translate" title="translate the text">
@@ -98,7 +98,6 @@
   const outputTxt = overlay.querySelector("#output-text");
   const footer = overlay.querySelector("#footer");
 
-
   // Ensure overlay doesn't interfere with page styles and is visible
   overlay.style.all = "unset";
   overlay.style.position = "fixed";
@@ -122,7 +121,7 @@
   overlay.style.boxSizing = "border-box";
 
   // Add styles for resizers
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
     #resizer-left, #resizer-right {
       position: absolute;
@@ -146,7 +145,6 @@
   // Debug log overlay creation
   console.log("Overlay created and appended to DOM:", overlay);
 
-
   // State management
   let isDragging = false;
   let isResizing = false;
@@ -162,11 +160,11 @@
   const handleMouseMove = (e) => {
     if (isResizing) {
       const dx = e.clientX - lastX;
-      if (isResizing === 'left') {
+      if (isResizing === "left") {
         const newWidth = overlay.offsetWidth - dx;
         overlay.style.width = `${newWidth}px`;
         overlay.style.left = `${overlay.offsetLeft + dx}px`;
-      } else if (isResizing === 'right') {
+      } else if (isResizing === "right") {
         const newWidth = overlay.offsetWidth + dx;
         overlay.style.width = `${newWidth}px`;
       }
@@ -200,7 +198,7 @@
       currentSession = null;
     }
     // Check and stop any ongoing speech synthesis
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       speechSynthesis.cancel();
     }
     // Remove all event listeners
@@ -214,15 +212,20 @@
   }
 
   // Utility functions
-  function showMessage(message, type = "info") {
-    const messageClass = type === "error" ? "error-message" :
-      type === "loading" ? "loading-message" :
-        type === "success" ? "success-message" : "info-message";
+  function showMessage(msg, type = "info") {
+    const msgClass =
+      type === "error"
+        ? "error-msg"
+        : type === "loading"
+        ? "loading-msg"
+        : type === "success"
+        ? "success-msg"
+        : "info-msg";
 
     if (type === "success") {
-      output.innerHTML = `<div id="${messageClass}">${renderMarkdown(message)}</div>`;
+      output.innerHTML = `<div id="${msgClass}">${renderMarkdown(msg)}</div>`;
     } else {
-      output.innerHTML = `<div id="${messageClass}">${message}</div>`;
+      output.innerHTML = `<div id="${msgClass}">${msg}</div>`;
     }
   }
 
@@ -230,64 +233,65 @@
     // Create a temporary container to work with content without modifying the original DOM
     const bodyClone = document.body.cloneNode(true);
     // Remove unwanted elements from the clone (not the original page)
-    const unwantedSelectors = 'script, style, nav, header, footer, aside, .advertisement, .ads, .sidebar, .menu, .navigation';
+    const unwantedSelectors =
+      "script, style, nav, header, footer, aside, .advertisement, .ads, .sidebar, .menu, .navigation";
     const unwantedElements = bodyClone.querySelectorAll(unwantedSelectors);
-    unwantedElements.forEach(el => el.remove());
+    unwantedElements.forEach((el) => el.remove());
 
     // Try to find main content areas in the clone
     const mainSelectors = [
-      'main',
+      "main",
       '[role="main"]',
-      '.main-content',
-      '.content',
-      '.post-content',
-      '.article-content',
-      'article',
-      '.entry-content',
-      'main',
-      '.post',
-      '#content',
-      '#main',
+      ".main-content",
+      ".content",
+      ".post-content",
+      ".article-content",
+      "article",
+      ".entry-content",
+      "main",
+      ".post",
+      "#content",
+      "#main",
       'div[role="main"]',
-      '.article-content',
-      '.article-body',
-      '.story-body',
-      '.article-text',
-      '.story-content',
+      ".article-content",
+      ".article-body",
+      ".story-body",
+      ".article-text",
+      ".story-content",
       '[itemprop="articleBody"]',
-      '.paid-premium-content',
-      '.str-story-body',
-      '.str-article-content',
-      '#story-body',
-      '.story-content',
-      'file'
+      ".paid-premium-content",
+      ".str-story-body",
+      ".str-article-content",
+      "#story-body",
+      ".story-content",
+      "file",
     ];
 
-    let mainContent = '';
+    let mainContent = "";
 
     for (const selector of mainSelectors) {
       const element = bodyClone.querySelector(selector);
       if (element) {
-        mainContent = element.innerText || element.textContent || '';
+        mainContent = element.innerText || element.textContent || "";
         break;
       }
     }
 
     // Fallback to body content if no main content found
     if (!mainContent) {
-      mainContent = bodyClone.innerText || bodyClone.textContent || '';
+      mainContent = bodyClone.innerText || bodyClone.textContent || "";
     }
 
     // Clean up the content
     mainContent = mainContent
-      .replace(/\s+/g, ' ') 
-      .replace(/\n\s*\n/g, '\n') 
+      .replace(/\s+/g, " ")
+      .replace(/\n\s*\n/g, "\n")
       .trim();
 
     // Limit content length to avoid token limits
     const maxLength = 8000;
     if (mainContent.length > maxLength) {
-      mainContent = mainContent.substring(0, maxLength) + '...';
+      mainContent = mainContent.substring(0, maxLength) + "...";
     }
 
     return mainContent;
@@ -300,7 +304,7 @@
         title: document.title,
         domain: window.location.hostname,
         content: extractMainContent(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       console.log("Page context extracted!");
       return context;
@@ -345,7 +349,7 @@
     // Show loading state
     searchBtn.disabled = true;
     searchBtn.textContent = "Working...";
-    output.innerHTML = ''; 
+    output.innerHTML = "";
     try {
       if (!pageContext) {
         pageContext = await extractPageContext();
@@ -354,7 +358,7 @@
         currentSession = await LanguageModel.create({
           initialPrompts: [
             {
-              role: 'system',
+              role: "system",
               content: `
       You are an intelligent and go-to friendly assistant designed to help users with study, brainstorming, General Knowledge and problem-solving
 
@@ -372,17 +376,16 @@
         `,
             },
             {
-              role: 'user',
-              content: 'What is deep learning?',
+              role: "user",
+              content: "What is deep learning?",
             },
             {
-              role: 'assistant',
+              role: "assistant",
               content: `Deep learning is a subfield of machine learning that uses multi-layered neural networks to identify patterns and make predictions from data. It powers systems like image recognition, language translation, and speech understanding. Would you like to explore how deep learning differs from traditional machine learning?`,
             },
           ],
         });
       }
-
 
       // Build contextual prompt
       const contextualPrompt = buildContextualPrompt(userInput, pageContext);
@@ -392,8 +395,8 @@
 
       // Display response
       let fullResponse = "";
-      output.innerHTML = '<div id="success-message"></div>';
-      const successMessageDiv = output.querySelector('#success-message');
+      output.innerHTML = '<div id="success-msg"></div>';
+      const successMessageDiv = output.querySelector("#success-msg");
 
       // stream output
       for await (const chunk of stream) {
@@ -403,10 +406,9 @@
       OutputResponseCopy = fullResponse;
 
       input.value = "";
-
     } catch (error) {
       console.error("Prompt error:", error);
-      showMessage(`Error: ${error.message || "Something went wrong"}`, "error");
+      showMessage(`Error: ${error.msg || "Something went wrong"}`, "error");
 
       // Clean up session on error
       if (currentSession) {
@@ -435,7 +437,7 @@
     // Read out (speak) feature
     readOutBtn.addEventListener("click", () => {
       const outputText = output.textContent;
-      if (!outputText || !('speechSynthesis' in window)) {
+      if (!outputText || !("speechSynthesis" in window)) {
         return;
       }
       if (speechSynthesis.speaking) {
@@ -450,17 +452,24 @@
       // Priority for female voice
       const speak = () => {
         const voices = speechSynthesis.getVoices();
-        let desiredVoice = voices.find(v => v.name.toLowerCase().includes('zira'));
+        let desiredVoice = voices.find((v) =>
+          v.name.toLowerCase().includes("zira")
+        );
         if (!desiredVoice) {
-          desiredVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+          desiredVoice = voices.find(
+            (v) =>
+              v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
+          );
         }
         if (desiredVoice) {
           utterance.voice = desiredVoice;
         } else {
-          console.log("Zira or any other English female voice not found. Using default voice.");
+          console.log(
+            "Zira or any other English female voice not found. Using default voice."
+          );
         }
         speechSynthesis.speak(utterance);
-        console.log("Read out (voice feature) use!")
+        console.log("Read out (voice feature) use!");
       };
 
       // Ensure voices are loaded before speaking
@@ -479,10 +488,14 @@
     saveNoteBtn.addEventListener("click", async () => {
       if (!UserInputCopy || !OutputResponseCopy) {
         console.log("No input and output response detected");
-        showMessage(`No input / output response detected. Output response: ${OutputResponseCopy || "empty"}. Ask something first...`);
+        showMessage(
+          `No input / output response detected. Output response: ${
+            OutputResponseCopy || "empty"
+          }. Ask something first...`
+        );
         return;
       }
-      console.log("Saving note initiated...")
+      console.log("Saving note initiated...");
       const note = {
         id: Date.now(),
         input: UserInputCopy.trim(),
@@ -494,10 +507,12 @@
         const { notes = [] } = await chrome.storage.local.get("notes");
         notes.push(note);
         await chrome.storage.local.set({ notes });
-        showMessage("Note saved successfully! Open collection page to see saved notes");
-        setTimeout( () => {
-          output.innerHTML= renderMarkdown(OutputResponseCopy);
-        }, 1500);        
+        showMessage(
+          "Note saved successfully! Open collection page to see saved notes"
+        );
+        setTimeout(() => {
+          output.innerHTML = renderMarkdown(OutputResponseCopy);
+        }, 1500);
       } catch (error) {
         console.error("Error saving note:", error);
         showMessage("Failed to save note. Check console for details.");
@@ -507,29 +522,46 @@
     // Dyslexia friendly mode
     dyslexiaBtn.addEventListener("click", () => {
       isDyslexiaMode = !isDyslexiaMode;
-      output.style.fontFamily = isDyslexiaMode ?
-        'OpenDyslexic, "Comic Sans MS", "Comic Sans"' :
-        '"Segoe UI", Roboto, Arial, sans-serif';
-      output.style.lineHeight = isDyslexiaMode ? '1.55' : '1.5';
-      output.style.letterSpacing = isDyslexiaMode ? '0.04rem' : '0.01rem';
+      output.style.fontFamily = isDyslexiaMode
+        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+        : '"Segoe UI", Roboto, Arial, sans-serif';
+      output.style.lineHeight = isDyslexiaMode ? "1.55" : "1.5";
+      output.style.letterSpacing = isDyslexiaMode ? "0.04rem" : "0.01rem";
       output.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
-      output.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
+      // output.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
+      // Target all child elements in output (ul, li, p, div, span, etc.) to avoid style conflict with some site
+      const outputChildren = output.querySelectorAll("*");
+      outputChildren.forEach((element) => {
+        element.style.setProperty(
+          "font-family",
+          isDyslexiaMode
+            ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+            : '"Segoe UI", Roboto, Arial, sans-serif'
+        );
+        element.style.setProperty(
+          "color",
+          isDyslexiaMode ? "#332626" : "#ffffffff"
+        );
+      });
       outputTxt.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       input.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
       input.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       input.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
-      input.style.fontFamily = isDyslexiaMode ?
-        'OpenDyslexic, "Comic Sans MS", "Comic Sans"' :
-        '"Segoe UI", Roboto, Arial, sans-serif';
+      input.style.fontFamily = isDyslexiaMode
+        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+        : '"Segoe UI", Roboto, Arial, sans-serif';
 
-      document.documentElement.style.setProperty('--placeholder-color', isDyslexiaMode ? '#332626ff' : '#ffffffff');
+      document.documentElement.style.setProperty(
+        "--placeholder-color",
+        isDyslexiaMode ? "#332626ff" : "#ffffffff"
+      );
 
       searchBtn.style.background = isDyslexiaMode ? "#f3e6de" : "#8282879c";
-      searchBtn.style.fontFamily = isDyslexiaMode ?
-        'OpenDyslexic, "Comic Sans MS", "Comic Sans" ' :
-        '"Segoe UI", Roboto, Arial, sans-serif';
+      searchBtn.style.fontFamily = isDyslexiaMode
+        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans" '
+        : '"Segoe UI", Roboto, Arial, sans-serif';
       searchBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
-      searchBtn.style.fontWeight = isDyslexiaMode ? '600' : '400';
+      searchBtn.style.fontWeight = isDyslexiaMode ? "600" : "400";
       searchBtn.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
 
       footer.style.background = isDyslexiaMode ? "#f3e6de" : "#8282879c";
@@ -537,11 +569,12 @@
       saveNoteBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       dyslexiaBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       translateBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
+      langList.style.appearance = "auto";
       langList.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       langList.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
-      langList.style.fontFamily = isDyslexiaMode ?
-        'OpenDyslexic, "Comic Sans MS", "Comic Sans" ' :
-        '"Segoe UI", Roboto, Arial, sans-serif';
+      langList.style.fontFamily = isDyslexiaMode
+        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans" '
+        : '"Segoe UI", Roboto, Arial, sans-serif';
       savedCollectionBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
     });
 
@@ -559,38 +592,36 @@
       searchBtn.textContent = "Working...";
 
       try {
-        // check availability first
-        const availability = await Translator.availability({
-          sourceLanguage: 'en', // text will be mostly in english, show no auto-detection
-          targetLanguage: targetLang,
-        });
         // Create translator and monitor download
         const translator = await Translator.create({
-          sourceLanguage: 'en',
+          sourceLanguage: "en",
           targetLanguage: targetLang,
           monitor(monitor) {
-            monitor.addEventListener('downloadprogress', (e) => {
-              showMessage(`Downloading translation model: ${Math.round(e.loaded * 100)}%`, "info");
+            monitor.addEventListener("downloadprogress", (e) => {
+              showMessage(
+                `Downloading translation model: ${Math.round(e.loaded * 100)}%`,
+                "info"
+              );
             });
           },
         });
 
         // Replace newlines with a placeholder before translation
-        const textToTranslate = outputText.replace(/\n/g, '<br>');
+        const textToTranslate = outputText.replace(/\n/g, "<br>");
         const stream = await translator.translateStreaming(textToTranslate);
         let fullResponse = "";
-        output.innerHTML = '<div id="success-message"></div>';
-        const successMessageDiv = output.querySelector('#success-message');
+        output.innerHTML = '<div id="success-msg"></div>';
+        const successMessageDiv = output.querySelector("#success-msg");
 
         for await (const chunk of stream) {
           fullResponse += chunk;
           // Replace placeholder back to newline before rendering
-          const responseToRender = fullResponse.replace(/ §NL§ /g, '\n');
+          const responseToRender = fullResponse.replace(/ §NL§ /g, "\n");
           successMessageDiv.innerHTML = renderMarkdown(responseToRender);
         }
 
         // Store the final response with newlines restored
-        OutputResponseCopy = fullResponse.replace(/ §NL§ /g, '\n');
+        OutputResponseCopy = fullResponse.replace(/ §NL§ /g, "\n");
 
         searchBtn.disabled = false;
         searchBtn.innerHTML = `
@@ -599,26 +630,23 @@
           </svg>&nbsp; Go
         `;
 
-
         // Clean up (optional)
         if (translator.destroy) translator.destroy();
       } catch (error) {
         console.error("Translation error:", error);
-        showMessage(`Error: ${error.message || "Translation failed"}`, "error");
+        showMessage(`Error: ${error.msg || "Translation failed"}`, "error");
       }
     }
 
     if (translateBtn) {
-      translateBtn.addEventListener('click', translate);
+      translateBtn.addEventListener("click", translate);
     }
 
     // Footer “Saved Collection” button
     savedCollectionBtn.addEventListener("click", () => {
       chrome.runtime.sendMessage({ action: "openCollectionPage" });
     });
-
   }
-
 
   // CALLING FUNCTIONS
   // Initialize page context
@@ -627,7 +655,6 @@
       pageContext = await extractPageContext();
       if (pageContext) {
         console.log("Page context loaded, title is:", pageContext.title);
-
       } else {
         console.log("Page context NOT loaded, will answer without context");
       }
@@ -651,6 +678,10 @@
   });
 
   footer.addEventListener("mousedown", (e) => {
+    // Don't start dragging if clicking on interactive elements
+    if (e.target.closest('#to-lang') || e.target.closest('#features > div')) {
+      return;
+    }
     isDragging = true;
     offsetX = e.clientX - overlay.getBoundingClientRect().left;
     offsetY = e.clientY - overlay.getBoundingClientRect().top;
@@ -659,18 +690,18 @@
   });
 
   // Resizing functionality
-  const resizerLeft = overlay.querySelector('#resizer-left');
-  const resizerRight = overlay.querySelector('#resizer-right');
+  const resizerLeft = overlay.querySelector("#resizer-left");
+  const resizerRight = overlay.querySelector("#resizer-right");
   let lastX = 0;
 
-  resizerLeft.addEventListener('mousedown', (e) => {
-    isResizing = 'left';
+  resizerLeft.addEventListener("mousedown", (e) => {
+    isResizing = "left";
     lastX = e.clientX;
     e.preventDefault();
   });
 
-  resizerRight.addEventListener('mousedown', (e) => {
-    isResizing = 'right';
+  resizerRight.addEventListener("mousedown", (e) => {
+    isResizing = "right";
     lastX = e.clientX;
     e.preventDefault();
   });
@@ -708,5 +739,4 @@
 
   // Focus input for better UX
   input.focus();
-
 })();

@@ -26,7 +26,7 @@
           </button>
       </div>
       <div id="naina-output">
-        <div class="status-message" id="output-text">Ready to help! Ask me anything...</div>
+        <div class="status-msg" id="output-text">Ready to help! Ask me anything...</div>
       </div>
       <footer id="footer">
         <div id="features">
@@ -211,15 +211,15 @@
   }
 
   // Utility functions
-  function showMessage(message, type = "info") {
-    const messageClass = type === "error" ? "error-message" : 
-                        type === "loading" ? "loading-message" : 
-                        type === "success" ? "success-message" : "info-message";
+  function showMessage(msg, type = "info") {
+    const msgClass = type === "error" ? "error-msg" : 
+                        type === "loading" ? "loading-msg" : 
+                        type === "success" ? "success-msg" : "info-msg";
     
     if (type === "success") {
-      output.innerHTML = `<div id="${messageClass}">${renderMarkdown(message)}</div>`;
+      output.innerHTML = `<div id="${msgClass}">${renderMarkdown(msg)}</div>`;
     } else {
-      output.innerHTML = `<div id="${messageClass}">${message}</div>`;
+      output.innerHTML = `<div id="${msgClass}">${msg}</div>`;
     }
   }
 
@@ -364,7 +364,7 @@ Please provide a helpful response considering the current page context. If the u
 
     } catch (error) {
       console.error("Prompt error:", error);
-      showMessage(`Error: ${error.message || "Something went wrong"}`, "error");
+      showMessage(`Error: ${error.msg || "Something went wrong"}`, "error");
       
       // Clean up session on error
       if (currentSession) {

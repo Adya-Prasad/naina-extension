@@ -108,7 +108,6 @@
   min-height: 50;
   margin-bottom: 5px;
   user-select: text;
-
 }
 
 /* Scrollbar styling */
@@ -123,7 +122,7 @@
 }
 
 #naina-output::-webkit-scrollbar-thumb {
-  background: rgba(117, 118, 121, 0.836);
+  background: rgba(99, 101, 107, 0.918);
   border-radius: 3px;
 }
 
@@ -131,7 +130,17 @@
   background: rgba(117, 118, 121, 0.932);
 }
 
-.success-message {
+#naina-output ul,
+#naina-output ol,
+#naina-output strong,
+#naina-output b,
+#naina-output h1,
+#naina-output h2,
+#naina-output h3 {
+  color: #ffffff;
+}
+
+.success-msg {
   color: #ffffff;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -139,11 +148,11 @@
   background: none;
 }
 
-.error-message {
+.error-msg {
   color: #e72c2c;
 }
 
-.info-message {
+.info-msg {
   font-style: italic;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -158,7 +167,9 @@
   border-radius: 8px;
   font-size: 15px;
   background: #82828788;
-  cursor: all-scroll;  
+  overflow: visible;
+  cursor: all-scroll;
+  user-select: none;
 }
 
 #features {
@@ -166,6 +177,7 @@
   justify-content: space-around;
   align-items: center;
   gap: 8px;
+  overflow: visible;
 }
 
 #features > div {
@@ -178,6 +190,7 @@
   cursor: pointer;
   color: #ffffff;
   transition: all 0.3s ease;
+  user-select: none;
 }
 
 #features > div:hover {
@@ -187,28 +200,57 @@
 #features > div:active {
   border: 2px solid #ffffff;
   border-radius: 3px;
-  
 }
 
-#to-lang{
-    background: transparent;
-    color: #ffffff;
-    border: 1px solid #ffffff;
-    border-radius: 4px;
-    margin-left: 4px;
-    padding: 2px;
-    font-weight: 600;
-    letter-spacing: 0.03rem;
+/* :optional */
+
+#translation-lang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  overflow: visible;
+  position: relative;
+  z-index: 1548575;
+  user-select: none;
 }
 
-option{
+#to-lang {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 60px;
+  z-index: 2147483647;
+  position: relative;
+  appearance: auto;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  pointer-events: auto;
+}
+
+option {
   background: #898b9686;
   color: #ffffff;
   font-weight: 600;
   letter-spacing: 0.03rem;
 }
 
-/* @font-face {
+#footer,
+#translation-lang,
+#to-lang {
+  pointer-events: auto;
+}
+
+@font-face {
   font-family: "OpenDyslexic";
   src: url("fonts/OpenDyslexic-Regular.woff2") format("woff2"),
     url("fonts/OpenDyslexic-Regular.woff") format("woff"),
@@ -216,15 +258,4 @@ option{
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-} */
-
-/* #naina-output ul {
-  padding-left: 20px;
-  margin-bottom: none;
 }
-
-#naina-output li {
-  list-style-type: disc;
-  display: list-item;
-  margin: none;
-} */
