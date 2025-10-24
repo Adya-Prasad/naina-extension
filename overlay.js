@@ -25,10 +25,8 @@
 </svg>&nbsp; Go
           </button>
       </div>
-      <div id="naina-output">
-        <div class="status-msg" id="output-text">Ready to help! Ask me anything...</div>
-      </div>
-      <div id="footer">
+      <div id="naina-output"><div id="welcome-text"></div></div>
+      <div id="featureFooter">
         <div id="features">
           <div id="read-out" title="read out the response">
             <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;" fill="none">
@@ -95,8 +93,11 @@
   const input = overlay.querySelector("#user-input");
   const searchBtn = overlay.querySelector("#ai-search");
   const output = overlay.querySelector("#naina-output");
-  const outputTxt = overlay.querySelector("#output-text");
-  const footer = overlay.querySelector("#footer");
+  const welcomeText = overlay.querySelector("#welcome-text");
+  const footer = overlay.querySelector("#featureFooter");
+
+  // Chat history array
+  let chatHistory = [];
 
   // Ensure overlay doesn't interfere with page styles and is visible
   overlay.style.all = "unset";
@@ -141,9 +142,6 @@
   document.head.appendChild(style);
 
   document.body.appendChild(overlay);
-
-  // Debug log overlay creation
-  console.log("Overlay created and appended to DOM:", overlay);
 
   // State management
   let isDragging = false;
@@ -222,10 +220,47 @@
         ? "success-msg"
         : "info-msg";
 
+    const messageDiv = document.createElement("div");
+    messageDiv.className = msgClass;
+
     if (type === "success") {
-      output.innerHTML = `<div id="${msgClass}">${renderMarkdown(msg)}</div>`;
+      messageDiv.innerHTML = renderMarkdown(msg);
     } else {
-      output.innerHTML = `<div id="${msgClass}">${msg}</div>`;
+      messageDiv.textContent = msg;
+    }
+    output.appendChild(messageDiv);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function addUserMessage(message) {
+    welcomeText.innerHTML = "";
+
+    const userDiv = document.createElement("div");
+    userDiv.className = "chat-message user-message";
+    userDiv.textContent = message;
+    output.appendChild(userDiv);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function addAiResponse(message, isStreaming = false) {
+    let aiDiv = output.querySelector(".ai-response-temp");
+
+    if (!aiDiv) {
+      aiDiv = document.createElement("div");
+      aiDiv.className = "ai-response-temp";
+      output.appendChild(aiDiv);
+    }
+
+    aiDiv.innerHTML = renderMarkdown(message);
+    output.scrollTop = output.scrollHeight;
+
+    return aiDiv;
+  }
+
+  function finalizeAiResponse() {
+    const streamingMsg = output.querySelector(".ai-response-temp");
+    if (streamingMsg) {
+      streamingMsg.className = "";
     }
   }
 
@@ -344,12 +379,17 @@
       showMessage("Please enter a question or prompt.", "error");
       return;
     }
+    // Add user message to chat
+    addUserMessage(userInput);
     UserInputCopy = userInput;
 
-    // Show loading state
+    // Store in chat history
+    chatHistory.push({ role: "user", content: userInput });
+
+    // Clear input and show loading state
+    input.value = "";
     searchBtn.disabled = true;
     searchBtn.textContent = "Working...";
-    output.innerHTML = "";
     try {
       if (!pageContext) {
         pageContext = await extractPageContext();
@@ -393,22 +433,24 @@
       // Send prompt and stream response
       const stream = await currentSession.promptStreaming(contextualPrompt);
 
-      // Display response
+      // Display response with streaming
       let fullResponse = "";
-      output.innerHTML = '<div id="success-msg"></div>';
-      const successMessageDiv = output.querySelector("#success-msg");
 
       // stream output
       for await (const chunk of stream) {
         fullResponse += chunk;
-        successMessageDiv.innerHTML = renderMarkdown(fullResponse);
+        addAiResponse(fullResponse, true);
       }
+
+      // Finalize the message
+      finalizeAiResponse();
       OutputResponseCopy = fullResponse;
 
-      input.value = "";
+      // Store in chat history
+      chatHistory.push({ role: "assistant", content: fullResponse });
     } catch (error) {
       console.error("Prompt error:", error);
-      showMessage(`Error: ${error.msg || "Something went wrong"}`, "error");
+      showMessage(`Error: ${error.message || "Something went wrong"}`, "error");
 
       // Clean up session on error
       if (currentSession) {
@@ -488,11 +530,12 @@
     saveNoteBtn.addEventListener("click", async () => {
       if (!UserInputCopy || !OutputResponseCopy) {
         console.log("No input and output response detected");
-        showMessage(
-          `No input / output response detected. Output response: ${
-            OutputResponseCopy || "empty"
-          }. Ask something first...`
-        );
+        const tempMsg = document.createElement("div");
+        tempMsg.className = "info-msg";
+        tempMsg.textContent = "No conversation to save. Ask something first...";
+        output.appendChild(tempMsg);
+        output.scrollTop = output.scrollHeight;
+        setTimeout(() => tempMsg.remove(), 3000);
         return;
       }
       console.log("Saving note initiated...");
@@ -507,15 +550,21 @@
         const { notes = [] } = await chrome.storage.local.get("notes");
         notes.push(note);
         await chrome.storage.local.set({ notes });
-        showMessage(
-          "Note saved successfully! Open collection page to see saved notes"
-        );
-        setTimeout(() => {
-          output.innerHTML = renderMarkdown(OutputResponseCopy);
-        }, 1500);
+
+        const tempMsg = document.createElement("div");
+        tempMsg.textContent =
+          "Note saved successfully! Open collection page to see saved notes";
+        output.appendChild(tempMsg);
+        output.scrollTop = output.scrollHeight;
+        setTimeout(() => tempMsg.remove(), 3000);
       } catch (error) {
         console.error("Error saving note:", error);
-        showMessage("Failed to save note. Check console for details.");
+        const tempMsg = document.createElement("div");
+        tempMsg.className = "error-msg";
+        tempMsg.textContent = "Failed to save note. Check console for details.";
+        output.appendChild(tempMsg);
+        output.scrollTop = output.scrollHeight;
+        setTimeout(() => tempMsg.remove(), 3000);
       }
     });
 
@@ -527,8 +576,8 @@
         : '"Segoe UI", Roboto, Arial, sans-serif';
       output.style.lineHeight = isDyslexiaMode ? "1.55" : "1.5";
       output.style.letterSpacing = isDyslexiaMode ? "0.04rem" : "0.01rem";
-      output.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
-      // output.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
+      output.style.background = isDyslexiaMode ? "#f3e6de" : "#82828788";
+      output.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       // Target all child elements in output (ul, li, p, div, span, etc.) to avoid style conflict with some site
       const outputChildren = output.querySelectorAll("*");
       outputChildren.forEach((element) => {
@@ -542,8 +591,15 @@
           "color",
           isDyslexiaMode ? "#332626" : "#ffffffff"
         );
+
+        // Apply border color to user-message elements
+        if (element.classList.contains("user-message")) {
+          element.style.setProperty(
+            "border-color",
+            isDyslexiaMode ? "#332626" : "#ffffff"
+          );
+        }
       });
-      outputTxt.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       input.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
       input.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       input.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
@@ -580,14 +636,39 @@
 
     // Translate functionality
     async function translate() {
-      const outputText = OutputResponseCopy; // Use the stored markdown response
-      if (!outputText) {
-        showMessage("No text to translate.", "info");
+      // Get all message elements (user messages and AI responses)
+      const allMessages = output.querySelectorAll(
+        ".user-message, .ai-response-temp"
+      );
+      const aiResponses = Array.from(output.children).filter(
+        (child) =>
+          !child.classList.contains("user-message") &&
+          !child.classList.contains("info-msg") &&
+          !child.classList.contains("error-msg") &&
+          child.textContent.trim().length > 0
+      );
+
+      if (allMessages.length === 0 && aiResponses.length === 0) {
+        const tempMsg = document.createElement("div");
+        tempMsg.className = "info-msg";
+        tempMsg.textContent =
+          "No conversation to translate. Ask something first...";
+        output.appendChild(tempMsg);
+        output.scrollTop = output.scrollHeight;
+        setTimeout(() => tempMsg.remove(), 3000);
         return;
       }
 
       const targetLang = overlay.querySelector("#to-lang").value;
       console.log("Trying to initiate translation");
+
+      // Show translating message
+      const translatingMsg = document.createElement("div");
+      translatingMsg.className = "info-msg translating-indicator";
+      translatingMsg.textContent = "Translating...";
+      output.appendChild(translatingMsg);
+      output.scrollTop = output.scrollHeight;
+
       searchBtn.disabled = true;
       searchBtn.textContent = "Working...";
 
@@ -598,30 +679,59 @@
           targetLanguage: targetLang,
           monitor(monitor) {
             monitor.addEventListener("downloadprogress", (e) => {
-              showMessage(
-                `Downloading translation model: ${Math.round(e.loaded * 100)}%`,
-                "info"
-              );
+              translatingMsg.textContent = `Downloading translation model: ${Math.round(
+                e.loaded * 100
+              )}%`;
             });
           },
         });
 
-        // Replace newlines with a placeholder before translation
-        const textToTranslate = outputText.replace(/\n/g, "<br>");
-        const stream = await translator.translateStreaming(textToTranslate);
-        let fullResponse = "";
-        output.innerHTML = '<div id="success-msg"></div>';
-        const successMessageDiv = output.querySelector("#success-msg");
+        // Remove translating message
+        translatingMsg.remove();
 
-        for await (const chunk of stream) {
-          fullResponse += chunk;
-          // Replace placeholder back to newline before rendering
-          const responseToRender = fullResponse.replace(/ §NL§ /g, "\n");
-          successMessageDiv.innerHTML = renderMarkdown(responseToRender);
+        // Helper function to translate text nodes while preserving HTML structure
+        async function translateElement(element) {
+          // Get all text nodes
+          const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+          );
+
+          const textNodes = [];
+          let node;
+          while ((node = walker.nextNode())) {
+            const text = node.textContent.trim();
+            if (text.length > 0) {
+              textNodes.push(node);
+            }
+          }
+
+          // Translate each text node
+          for (const textNode of textNodes) {
+            const originalText = textNode.textContent.trim();
+            if (originalText) {
+              const translatedText = await translator.translate(originalText);
+              textNode.textContent = translatedText;
+            }
+          }
         }
 
-        // Store the final response with newlines restored
-        OutputResponseCopy = fullResponse.replace(/ §NL§ /g, "\n");
+        // Translate user messages
+        const userMessages = output.querySelectorAll(".user-message");
+        for (const userMsg of userMessages) {
+          const originalText = userMsg.textContent;
+          const translatedText = await translator.translate(originalText);
+          userMsg.textContent = translatedText;
+        }
+
+        // Translate AI responses while preserving HTML structure
+        for (const aiMsg of aiResponses) {
+          await translateElement(aiMsg);
+        }
+
+        output.scrollTop = output.scrollHeight;
 
         searchBtn.disabled = false;
         searchBtn.innerHTML = `
@@ -630,11 +740,26 @@
           </svg>&nbsp; Go
         `;
 
-        // Clean up (optional)
+        // Clean up
         if (translator.destroy) translator.destroy();
       } catch (error) {
         console.error("Translation error:", error);
-        showMessage(`Error: ${error.msg || "Translation failed"}`, "error");
+        if (translatingMsg.parentNode) translatingMsg.remove();
+        const tempMsg = document.createElement("div");
+        tempMsg.className = "error-msg";
+        tempMsg.textContent = `Error: ${error.message || "Translation failed"}`;
+        output.appendChild(tempMsg);
+        output.scrollTop = output.scrollHeight;
+
+        searchBtn.disabled = false;
+        setTimeout(() => tempMsg.remove(), 3000);
+
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = `
+          <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+          <path d="M9.91158 12H7.45579H4L2.02268 4.13539C2.0111 4.0893 2.00193 4.04246 2.00046 3.99497C1.97811 3.27397 2.77209 2.77366 3.46029 3.10388L22 12L3.46029 20.8961C2.77983 21.2226 1.99597 20.7372 2.00002 20.0293C2.00038 19.9658 2.01455 19.9032 2.03296 19.8425L3.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>&nbsp; Go
+        `;
       }
     }
 
@@ -648,18 +773,22 @@
     });
   }
 
-  // CALLING FUNCTIONS
   // Initialize page context
   async function initializePageContext() {
     try {
       pageContext = await extractPageContext();
-      if (pageContext) {
+      if (pageContext && pageContext.title) {
         console.log("Page context loaded, title is:", pageContext.title);
+        welcomeText.innerHTML = `How can I help you? Do you want to know something related to: <br><em>${pageContext.title}</em>`;
       } else {
         console.log("Page context NOT loaded, will answer without context");
+        welcomeText.textContent =
+          "How can I help you today? (No clear page context detected)";
       }
     } catch (error) {
       console.error("Failed to initialize page context:", error);
+      welcomeText.textContent =
+        "There is something error! But how can I help you today?";
     }
   }
 
@@ -679,7 +808,7 @@
 
   footer.addEventListener("mousedown", (e) => {
     // Don't start dragging if clicking on interactive elements
-    if (e.target.closest('#to-lang') || e.target.closest('#features > div')) {
+    if (e.target.closest("#to-lang") || e.target.closest("#features > div")) {
       return;
     }
     isDragging = true;

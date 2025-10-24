@@ -94,20 +94,23 @@
   background: #9f9fa19c;
 }
 
-/* output div */
+/* output div - Chat container */
 #naina-output {
   background: #82828788;
   border-radius: 8px;
   padding: 12px;
   font-size: 16px;
-  overflow-y: auto;
+  overflow-x: hidden;
   color: #ffffff;
-  backdrop-filter: blur(4px);
   line-height: 1.5;
   flex: 1;
-  min-height: 50;
+  min-height: 50px;
   margin-bottom: 5px;
   user-select: text;
+  display: flex;
+  backdrop-filter: blur(4px);
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* Scrollbar styling */
@@ -136,10 +139,11 @@
 #naina-output b,
 #naina-output h1,
 #naina-output h2,
-#naina-output h3 {
-  color: #ffffff;
+#naina-output h3,
+#naina-output p,
+#naina-output pre {
+  color: inherit;
 }
-
 .success-msg {
   color: #ffffff;
   white-space: pre-wrap;
@@ -156,11 +160,22 @@
   font-style: italic;
   white-space: pre-wrap;
   word-wrap: break-word;
-  color: #f0f0f0;
+  color: #e4e4e9;
+}
+
+.user-message {
+  width: 70%;
+  width: fit-content;
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  border-radius: 9px 9px 0px 9px;
+  padding: 3px 9px;
+  border: 1px solid white;
 }
 
 /* Footer */
-#footer {
+#featureFooter {
   margin-top: auto;
   flex-shrink: 0;
   padding: 5px 9px;
