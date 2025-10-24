@@ -28,7 +28,7 @@
       <div id="naina-output">
         <div class="status-msg" id="output-text">Ready to help! Ask me anything...</div>
       </div>
-      <footer id="footer">
+      <div id="footer">
         <div id="features">
           <div id="read-out" title="read out the response">
             <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;" fill="none">
@@ -79,7 +79,7 @@
            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"><path d="M14 19L17 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 6V12C4 12 4 15 11 15C18 15 18 12 18 12V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 3C18 3 18 6 18 6C18 6 18 9 11 9C4 9 4 6 4 6C4 6 4 3 11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 21C4 21 4 18 4 18V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
         </div>
-      </footer>
+      </div>
       <div id="resizer-right"></div>
     </div>
   `;

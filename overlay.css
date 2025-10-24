@@ -116,18 +116,18 @@
 }
 
 #naina-output::-webkit-scrollbar-track {
-  background: rgba(127, 128, 129, 0.411);
+  background: rgba(38, 37, 63, 0.411);
   border-radius: 3px;
   padding: 0.5px;
 }
 
 #naina-output::-webkit-scrollbar-thumb {
-  background: rgba(99, 101, 107, 0.918);
+  background: rgba(37, 33, 59, 0.795);
   border-radius: 3px;
 }
 
 #naina-output::-webkit-scrollbar-thumb:hover {
-  background: rgba(117, 118, 121, 0.932);
+  background: rgba(16, 12, 41, 0.808);
 }
 
 #naina-output ul,
@@ -186,11 +186,19 @@
   justify-content: center;
   width: 27px;
   height: 27px;
+  min-width: 27px;
+  min-height: 27px;
+  max-width: 27px;
+  max-height: 27px;
   border-radius: 6px;
   cursor: pointer;
   color: #ffffff;
   transition: all 0.3s ease;
   user-select: none;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 #features > div:hover {
@@ -208,6 +216,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 27px;
+  height: 27px;
+  min-width: 27px;
+  min-height: 27px;
+  max-width: 27px;
+  max-height: 27px;
   border-radius: 6px;
   cursor: pointer;
   color: #ffffff;
@@ -216,6 +230,10 @@
   position: relative;
   z-index: 1548575;
   user-select: none;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 #to-lang {
@@ -229,12 +247,19 @@
   font-size: 12px;
   cursor: pointer;
   min-width: 60px;
+  width: 60px;
+  height: 100%;
+  max-height: 27px;
   z-index: 2147483647;
   position: relative;
   appearance: auto;
   -webkit-appearance: menulist;
   -moz-appearance: menulist;
   pointer-events: auto;
+  box-sizing: border-box;
+  margin: 0;
+  vertical-align: middle;
+  line-height: normal;
 }
 
 option {
