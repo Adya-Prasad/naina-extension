@@ -4,8 +4,11 @@
   // Check if overlay already exists and toggle it
   const existing = document.getElementById("naina-assistant-ui");
   if (existing) {
-    existing.style.display =
-      existing.style.display === "none" ? "block" : "none";
+    if (existing.style.display === "none") {
+      existing.style.display = "flex";
+    } else {
+      existing.style.display = "none";
+    }
     return;
   }
 
