@@ -601,13 +601,19 @@
         console.error("Error saving note:", error);
         const tempMsg = document.createElement("div");
         tempMsg.className = "error-msg";
-        
-        if (error.message && error.message.includes("Extension context invalidated")) {
-          tempMsg.textContent = "Extension was reloaded. Please refresh the page and try again.";
+
+        if (
+          error.message &&
+          error.message.includes("Extension context invalidated")
+        ) {
+          tempMsg.textContent =
+            "Extension was reloaded. Please refresh the page and try again.";
         } else {
-          tempMsg.textContent = `Failed to save note: ${error.message || "Unknown error"}`;
+          tempMsg.textContent = `Failed to save note: ${
+            error.message || "Unknown error"
+          }`;
         }
-        
+
         output.appendChild(tempMsg);
         output.scrollTop = output.scrollHeight;
         setTimeout(() => tempMsg.remove(), 5000);
@@ -633,18 +639,27 @@
             ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
             : '"Segoe UI", Roboto, Arial, sans-serif'
         );
-        element.style.setProperty(
-          "color",
-          isDyslexiaMode ? "#332626" : "#ffffffff"
-        );
 
-        // Apply border color to user-message elements
-        if (element.classList.contains("user-message")) {
+        // Don't apply general color to user-message elements (they have their own styling)
+        if (!element.classList.contains("user-message")) {
           element.style.setProperty(
-            "border-color",
-            isDyslexiaMode ? "#332626" : "#ffffff"
+            "color",
+            isDyslexiaMode ? "#332626" : "#ffffffff"
           );
         }
+      });
+
+      // Apply specific styling to user-message elements
+      const userMessages = output.querySelectorAll(".user-message");
+      userMessages.forEach((userMsg) => {
+        userMsg.style.setProperty(
+          "border-color",
+          isDyslexiaMode ? "#332626" : "#ffffff"
+        );
+        userMsg.style.setProperty(
+          "color",
+          isDyslexiaMode ? "#332626" : "#ffffff"
+        );
       });
       input.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
       input.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
@@ -817,26 +832,38 @@
     savedCollectionBtn.addEventListener("click", () => {
       // Check if chrome.runtime is available
       if (!chrome.runtime || !chrome.runtime.id) {
-        alert("Extension was reloaded. Please refresh this page to use the extension.");
+        alert(
+          "Extension was reloaded. Please refresh this page to use the extension."
+        );
         return;
       }
-      
+
       try {
-        chrome.runtime.sendMessage({ action: "openCollectionPage" }, (response) => {
-          if (chrome.runtime.lastError) {
-            console.warn("Could not send message to background:", chrome.runtime.lastError);
-            // Try to get extension URL
-            try {
-              const collectionUrl = chrome.runtime.getURL("collection.html");
-              window.open(collectionUrl, "_blank");
-            } catch (urlError) {
-              alert("Extension context lost. Please refresh this page to use the extension.");
+        chrome.runtime.sendMessage(
+          { action: "openCollectionPage" },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn(
+                "Could not send message to background:",
+                chrome.runtime.lastError
+              );
+              // Try to get extension URL
+              try {
+                const collectionUrl = chrome.runtime.getURL("collection.html");
+                window.open(collectionUrl, "_blank");
+              } catch (urlError) {
+                alert(
+                  "Extension context lost. Please refresh this page to use the extension."
+                );
+              }
             }
           }
-        });
+        );
       } catch (error) {
         console.error("Extension error:", error);
-        alert("Extension context lost. Please refresh this page to use the extension.");
+        alert(
+          "Extension context lost. Please refresh this page to use the extension."
+        );
       }
     });
   }

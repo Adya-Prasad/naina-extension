@@ -1,160 +1,161 @@
-# Naina Assistant - Chrome Extension
+## Inspiration
 
-A Chrome extension that provides AI assistance using Chrome's built-in Gemini Nano model through the Prompt API. The extension creates a draggable overlay on any webpage for seamless AI interaction.
+Web browsing is an integral part of our lives, whether you're working, reading, or developing on the web. You have to interact in a browser. And you can't perform everything in an LLM chatbot, nor can you frequently switch tabs for AI help—and you need an internet connection. To solve this shortcoming, you need seamless AI assistance (an extension) that works on every tab page, always ready at your service to boost your productivity.
 
-## Features
+Other browser AI assistants (extensions) have very confusing and cluttered UIs and also require an active internet connection, user agreements, along with privacy concerns about monitoring your browser activity. So I created **Naina Assistant** with a clean and handy interface that lives in your browser, works both offline and online, and has no compromises on privacy or monitoring. _Everything under user control_.
 
-- 🤖 **Chrome Built-in AI**: Uses Gemini Nano model via Chrome's Prompt API
-- 🎯 **Draggable Overlay**: Clean, modern UI that can be moved around the page
-- ⚡ **Real-time Responses**: Get instant AI responses to your questions
-- 🔄 **Session Management**: Maintains conversation context across interactions
-- 🎨 **Modern UI**: Beautiful glassmorphism design with smooth animations
-- ⌨️ **Keyboard Shortcuts**: Use Ctrl+Shift+Q to toggle the overlay
-- 🛡️ **Error Handling**: Comprehensive error handling and user feedback
+> As the name **Naina** implies 'Vision' this extension can also see and understand what you're working on to provide context-specific help.
 
-## Requirements
+## What it does
 
-### System Requirements
-- **Operating System**: Windows 10/11, macOS 13+, Linux, or ChromeOS (Chromebook Plus)
-- **Storage**: At least 22 GB of free space
-- **GPU**: 4+ GB VRAM OR 16+ GB RAM with 4+ CPU cores
-- **Network**: Unmetered connection (Wi-Fi/Ethernet recommended)
+Introducing **Naina Assistant**, a browser extension and multimodal AI companion that you can open on any webpage, ask your questions about that page or any general topic, and it will instantly provide you with accurate help and explanations, enhancing your productivity and learning capabilities.
 
-### Chrome Version
-- Chrome 138+ with Prompt API support
-- Origin trial participation may be required
+1. **Clean and customizable UI:** Naina Assistant's UI is very minimal and focused so that it doesn't distract you from your work and helps you with your problems. It has a customizable interface; you can **drag** and **resize** it to your convenience, and it doesn't hide your current tab page.
 
-## Installation
+It's a multi-featured AI extension that fulfills all your needs.
 
-1. **Clone or download** this repository
-2. **Open Chrome** and navigate to `chrome://extensions/`
-3. **Enable Developer mode** (toggle in top-right corner)
-4. **Click "Load unpacked"** and select the extension folder
-5. **Pin the extension** to your toolbar for easy access
+2. **User inputs & outputs:** Real-time chat with Chrome's built-in Gemini Nano AI provides context-specific and general responses/explanations, with no cloud requests and built with a privacy-first approach.
+3. **Page Context Awareness:** Automatically extracts and analyzes current webpage content. Contains smart context usage—uses context only when relevant to user's query, otherwise provides general responses. Naina can understand `code` and files too.
+4. **No external request sending:** For responses, it doesn't rely on the internet, any cloud requests, or additional API requests. Everything happens in the user's browser.
+5. **Works both online and offline:** Whether you live in a remote area or have an unstable internet connection, it works seamlessly. It only requires an internet connection the first time to download the model.
+6. **Persistent conversation history:** Persistent conversation history within a session for better context memory.
+7. **Text-to-Speech (Read Aloud):** Reads AI responses using the browser's speech synthesis so that you can do _**multitasking**_. Toggle on/off by clicking again.
+8. **Save Notes Feature:** One-click save conversations to local storage—everything under user control with no privacy trade-off. _Save your important read-later notes in just one click_.
+9. **Dyslexia-Friendly Mode:** Naina has been designed to be suitable for **people with dyslexia**. Users can change color, background color, and font to dyslexia-friendly settings in one click.
+10. **Multilingual Translation:** Users can translate AI responses into their desired language.
+11. **Collection Save Page:** All saved notes organized in one place. Users can revise saved chats and manage saved notes on the collection page.
+12. **Multiple shortcuts to open extension instantly:** Providing convenient and boosting your productivity without breaking your focus is the primary goal of Naina. User can open Naina chat in three ways:
+    - Default method: from extension pin bar
+    - Keyboard shortcut: **Ctrl + Shift + Q**
+    - Right-click context menu → 'Naina Assistant' option
+13. **Local in-device storage:** All saved chat data is stored locally in your browser—no sharing and no cloud storage.
 
-## Usage
+## How I built it
 
-### Opening the Assistant
-- **Click the extension icon** in the toolbar, OR
-- **Use keyboard shortcut** Ctrl+Shift+Q
+Naina is empowered by Chrome's built-in Gemini Nano AI API. I developed Naina with **multimodal ability** with robust and simple technical implementation for stable and fast working.
 
-### Interacting with AI
-1. **Type your question** in the input field
-2. **Press Enter** or click the Send button
-3. **Wait for response** (loading indicator will show)
-4. **Continue the conversation** - context is maintained
+- **AI APIs:**
+  - **Prompt API** (Gemini Nano) for intelligent language model responses with streaming support
+  - **Translator API** for multi-language translation (13+ languages)
+- **Speech Synthesis:** Browser's built-in Web Speech API for text-to-speech functionality with voice selection.
+- **Page context extraction:** DOM manipulation to clone and clean webpage content. Extracts main content from semantic HTML tags (main, article, .content)
+- **Local note saving:** Chrome Storage API (`chrome.storage.local`) for persistent data storage
+- **DOM Traversal:** TreeWalker API for format-preserving translation (translates text nodes while keeping HTML structure intact)
 
-### Moving the Overlay
-- **Drag the header** to move the overlay around the page
-- **Click the X** to close the overlay
+## Requirements:
 
-## Code Structure
+**1. Browser Requirements:**
+1a. Chrome Version: Chrome 127+ (Stable) or Chrome 138+ (for all features) [Chrome Canary]
+1b. Operating System: Windows, macOS, Linux, or ChromeOS
+1c. Internet Connection (unmetered): Required only for fetching articles from URLs (AI processing works offline and locally)
 
-```
-├── manifest.json          # Extension configuration
-├── background.js          # Service worker for extension logic
-├── content_script.js            # Content script for page interaction
-├── overlay.js            # Main overlay UI and AI functionality
-├── overlay.css           # Styling for the overlay
-├── naina-icon.png        # Extension icon
-└── README.md             # This file
-```
+**2. AI Model Requirements**
+2a. Gemini Nano: Built-in AI model (downloads automatically on first use)
+2b. Storage Space: At least 22 GB of free space on the volume that contains your Chrome profile
+2c. GPU: Strictly more than 4 GB of VRAM. CPU: 16 GB of RAM or more and 4 CPU cores or more.
 
-## Key Improvements Made
+3. Enable Chrome AI Features
+   3a. `chrome://flags/#optimization-guide-on-device-model`
+   3b. `chrome://flags/#prompt-api-for-gemini-nano`
+   3c. `chrome://flags/#translation-api`
 
-### 1. **Proper Chrome Prompt API Implementation**
-- ✅ Correct API availability checking
-- ✅ Proper session management
-- ✅ Error handling for API failures
-- ✅ Resource cleanup on errors
+## Setup and Run
 
-### 2. **Clean Code Architecture**
-- ✅ Removed duplicate code
-- ✅ Modular function structure
-- ✅ Proper event handling
-- ✅ Memory leak prevention
+### Installation Steps
 
-### 3. **Enhanced User Experience**
-- ✅ Loading states and animations
-- ✅ Clear error messages
-- ✅ Keyboard shortcuts
-- ✅ Responsive design
+1. **Clone or Download the Repository**
 
-### 4. **Robust Error Handling**
-- ✅ API availability checks
-- ✅ Network error handling
-- ✅ User-friendly error messages
-- ✅ Graceful degradation
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/naina-extension.git
+   ```
 
-## API Usage
+   Or download as ZIP and extract it.
 
-The extension uses Chrome's built-in Prompt API:
+2. **Enable above Chrome AI Features** and restart Chrome after enabling these flags
 
-```javascript
-// Check API availability
-const availability = await LanguageModel.availability();
+3. **Load the Extension**
 
-// Create session
-const session = await LanguageModel.create();
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable **Developer mode** (toggle in the top-right corner)
+   - Click **"Load unpacked"**
+   - Select the `naina-extension` folder (the one containing `manifest.json`)
 
-// Send prompt
-const response = await session.prompt("Your question here");
+4. **Pin the Extension**
 
-// Clean up
-session.destroy();
-```
+   - Click the puzzle icon (🧩) in the Chrome toolbar
+   - Find "Naina Assistant" and click the pin icon
+   - The extension icon will now appear in your toolbar
 
-## Troubleshooting
+5. **First-Time Setup**
+   - Click the Naina Assistant icon or press **Ctrl + Shift + Q**
+   - The chat interface will open, give your first input, it will download model automatically (this may take 2-5 minutes)
+   - You'll see a download progress indicator
+   - Once complete, you're ready to use Naina!
 
-### Extension Not Working
-1. **Check Chrome version** - Must be 138+
-2. **Verify system requirements** - Ensure sufficient storage/RAM
-3. **Check network connection** - Must be unmetered
-4. **Reload the extension** - Go to chrome://extensions/ and click reload
+### Usage
 
-### AI Not Responding
-1. **Check API availability** - Look for error messages in overlay
-2. **Verify permissions** - Ensure extension has proper permissions
-3. **Check Chrome flags** - Some AI features may need to be enabled
-4. **Restart Chrome** - Sometimes required for API initialization
 
-### Performance Issues
-1. **Close other tabs** - Free up memory
-2. **Check storage space** - Ensure 22GB+ available
-3. **Restart the session** - Close and reopen the overlay
+### Troubleshooting
 
-## Development
+**Extension not loading:**
 
-### Testing
-1. Load the extension in developer mode
-2. Test on various websites
-3. Check console for errors
-4. Verify API responses
+- Make sure all Chrome flags are enabled
+- Restart Chrome completely
+- Check that you're using Chrome 127+ or Chrome Canary 138+
 
-### Customization
-- Modify `overlay.css` for styling changes
-- Update `overlay.js` for functionality changes
-- Adjust `manifest.json` for permissions/configuration
+**AI model not downloading:**
 
-## Privacy & Security
+- Ensure you have 22+ GB free storage
+- Check your internet connection (unmetered)
+- Verify GPU/RAM requirements are met
+- Try reloading the extension
 
-- **No data collection** - All processing happens locally
-- **No external API calls** - Uses Chrome's built-in AI
-- **No tracking** - Extension doesn't track user behavior
-- **Local processing** - AI runs on your device
+**Extension not responding:**
 
-## License
+- Refresh the webpage
+- Reload the extension from `chrome://extensions/`
+- Check browser console for errors (F12 → Console tab)
 
-This project is open source. Feel free to modify and distribute according to your needs.
+**Making Changes:**
 
-## Support
+1. Edit the files as needed
+2. Go to `chrome://extensions/`
+3. Click the reload icon (🔄) on the Naina Assistant card
+4. Test your changes
 
-For issues or questions:
-1. Check the troubleshooting section above
-2. Review Chrome's Prompt API documentation
-3. Check Chrome's built-in AI requirements
-4. Verify your system meets the requirements
+### Contributing
 
----
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-**Note**: This extension requires Chrome's built-in AI features which are still in development. Some features may not be available in all regions or Chrome versions.
+#### License
+
+This project is open source and available under the MIT License.
+
+## Challenges I ran into
+
+Ensuring Naina's accurate responses and smooth running features was a challenging task. These challenges taught me a lot:
+
+1. **CSS Conflicts with External Websites:** Website CSS was overriding extension styles, breaking the overlay layout. I solved this by creating defensive CSS with explicit sizing constraints, high z-index values, and testing across multiple websites.
+
+2. **Markdown Rendering Accuracy:** AI responses needed proper formatting (lists, code blocks, headers). I tackled this by building a custom markdown-to-HTML converter with smart line break handling and filtering empty list items.
+
+3. **Persistent Chat History:** Managing multiple follow-up inputs/outputs in the same session was tricky—it conflicted with translation and note saving. I solved it by transforming from single-response to conversation array structure, storing messages with type identifiers (user/assistant), and using TreeWalker API to translate text nodes while preserving HTML structure.
+
+4. **Extension Context Invalidation:** When the extension reloads, Chrome APIs throw errors. I handled this with comprehensive error handling, checking `chrome.runtime.id` availability, and providing user-friendly fallback messages.
+
+## Accomplishments that I'm proud of
+
+Solved a shortcoming need by creating a seamless and customizable extension that doesn't compromise on privacy and is always available at your fingertips.
+
+## What I learned
+
+- Privacy-first principles
+- Safe DOM extraction & filtering and DOM traversal
+- Deep dive into the browser's speech synthesis
+- Working with client-side APIs
+
+## What's next for Naina Assistant
+
+- Direct multilingual input and output
+- Memory management
+- Media support in chat
