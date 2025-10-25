@@ -62,7 +62,8 @@
         "collection.html",
         "collection.js",
         "collection.css",
-        "images/*"
+        "images/*",
+        "fonts/*"
       ],
       "matches": ["<all_urls>"]
     }

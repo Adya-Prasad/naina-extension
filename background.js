@@ -24,7 +24,7 @@ async function toggleOverlay(tab) {
         func: () => {
           const overlay = document.getElementById("naina-assistant-ui");
           if (overlay) {
-            overlay.style.display = overlay.style.display === "none" ? "block" : "none";
+            overlay.style.display = overlay.style.display === "none" ? "flex" : "none";
           }
         }
       });

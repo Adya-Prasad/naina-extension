@@ -285,12 +285,4 @@ option {
   pointer-events: auto;
 }
 
-@font-face {
-  font-family: "OpenDyslexic";
-  src: url("fonts/OpenDyslexic-Regular.woff2") format("woff2"),
-    url("fonts/OpenDyslexic-Regular.woff") format("woff"),
-    url("fonts/OpenDyslexic-Regular.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+/* OpenDyslexic font will be loaded dynamically via JavaScript */

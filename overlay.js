@@ -1,6 +1,27 @@
 (() => {
   "use strict";
 
+  // Load OpenDyslexic font dynamically with proper extension URL
+  const fontFaceStyle = document.createElement("style");
+  fontFaceStyle.textContent = `
+    @font-face {
+      font-family: "OpenDyslexic";
+      src: url("${chrome.runtime.getURL(
+        "fonts/OpenDyslexic-Regular.woff2"
+      )}") format("woff2"),
+           url("${chrome.runtime.getURL(
+             "fonts/OpenDyslexic-Regular.woff"
+           )}") format("woff"),
+           url("${chrome.runtime.getURL(
+             "fonts/OpenDyslexic-Regular.otf"
+           )}") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+  `;
+  document.head.appendChild(fontFaceStyle);
+
   // Check if overlay already exists and toggle it
   const existing = document.getElementById("naina-assistant-ui");
   if (existing) {
@@ -542,8 +563,9 @@
           child.textContent.trim().length > 0
       );
 
-      if (userMessages.length === 0 && aiResponses.length === 0) {
-        console.log("No conversation detected");
+      // Check if there's actual conversation (not just welcome message)
+      if (userMessages.length === 0) {
+        console.log("No conversation detected - no user messages");
         const tempMsg = document.createElement("div");
         tempMsg.className = "info-msg";
         tempMsg.textContent = "No conversation to save. Ask something first...";
@@ -624,8 +646,9 @@
     dyslexiaBtn.addEventListener("click", () => {
       isDyslexiaMode = !isDyslexiaMode;
       output.style.fontFamily = isDyslexiaMode
-        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+        ? "OpenDyslexic, sans-serif"
         : '"Segoe UI", Roboto, Arial, sans-serif';
+      output.style.fontSize = isDyslexiaMode ? "15px" : "16px";
       output.style.lineHeight = isDyslexiaMode ? "1.55" : "1.5";
       output.style.letterSpacing = isDyslexiaMode ? "0.04rem" : "0.01rem";
       output.style.background = isDyslexiaMode ? "#f3e6de" : "#82828788";
@@ -636,7 +659,7 @@
         element.style.setProperty(
           "font-family",
           isDyslexiaMode
-            ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+            ? "OpenDyslexic, sans-serif"
             : '"Segoe UI", Roboto, Arial, sans-serif'
         );
 
@@ -664,8 +687,10 @@
       input.style.background = isDyslexiaMode ? "#f3e6de" : "#71737980";
       input.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       input.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
+      input.style.fontSize = isDyslexiaMode ? "13px" : "15px";
+      input.style.padding = isDyslexiaMode ? "4px 7px" : "5px 9px";
       input.style.fontFamily = isDyslexiaMode
-        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans"'
+        ? "OpenDyslexic, sans-serif"
         : '"Segoe UI", Roboto, Arial, sans-serif';
 
       document.documentElement.style.setProperty(
@@ -675,8 +700,10 @@
 
       searchBtn.style.background = isDyslexiaMode ? "#f3e6de" : "#8282879c";
       searchBtn.style.fontFamily = isDyslexiaMode
-        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans" '
+        ? "OpenDyslexic, sans-serif"
         : '"Segoe UI", Roboto, Arial, sans-serif';
+      searchBtn.style.fontSize = isDyslexiaMode ? "12px" : "14px";
+      searchBtn.style.padding = isDyslexiaMode ? "4px 7px" : "5px 9px";
       searchBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffff";
       searchBtn.style.fontWeight = isDyslexiaMode ? "600" : "400";
       searchBtn.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
@@ -689,8 +716,9 @@
       langList.style.appearance = "auto";
       langList.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
       langList.style.borderColor = isDyslexiaMode ? "#332626" : "#ffffffff";
+      langList.style.fontSize = isDyslexiaMode ? "11px" : "12px";
       langList.style.fontFamily = isDyslexiaMode
-        ? 'OpenDyslexic, "Comic Sans MS", "Comic Sans" '
+        ? "OpenDyslexic, sans-serif"
         : '"Segoe UI", Roboto, Arial, sans-serif';
       savedCollectionBtn.style.color = isDyslexiaMode ? "#332626" : "#ffffffff";
     });
