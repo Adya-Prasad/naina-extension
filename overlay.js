@@ -396,6 +396,7 @@
       }
       if (!currentSession) {
         currentSession = await LanguageModel.create({
+          expectedOutputs: [{ type: "text", languages: ["en"] }],
           initialPrompts: [
             {
               role: "system",
@@ -528,8 +529,18 @@
 
     // Save Note feature
     saveNoteBtn.addEventListener("click", async () => {
-      if (!UserInputCopy || !OutputResponseCopy) {
-        console.log("No input and output response detected");
+      // Get all conversation messages from output div
+      const userMessages = Array.from(output.querySelectorAll(".user-message"));
+      const aiResponses = Array.from(output.children).filter(
+        (child) =>
+          !child.classList.contains("user-message") &&
+          !child.classList.contains("info-msg") &&
+          !child.classList.contains("error-msg") &&
+          child.textContent.trim().length > 0
+      );
+
+      if (userMessages.length === 0 && aiResponses.length === 0) {
+        console.log("No conversation detected");
         const tempMsg = document.createElement("div");
         tempMsg.className = "info-msg";
         tempMsg.textContent = "No conversation to save. Ask something first...";
@@ -538,12 +549,37 @@
         setTimeout(() => tempMsg.remove(), 3000);
         return;
       }
-      console.log("Saving note initiated...");
+
+      console.log("Saving entire conversation...");
+
+      // Build conversation array with proper structure
+      const conversation = [];
+      const allChildren = Array.from(output.children);
+
+      for (const child of allChildren) {
+        if (child.classList.contains("user-message")) {
+          conversation.push({
+            type: "user",
+            content: child.textContent.trim(),
+          });
+        } else if (
+          !child.classList.contains("info-msg") &&
+          !child.classList.contains("error-msg") &&
+          child.textContent.trim().length > 0
+        ) {
+          conversation.push({
+            type: "assistant",
+            content: child.innerHTML.trim(), // Keep HTML for formatting
+          });
+        }
+      }
+
       const note = {
         id: Date.now(),
-        input: UserInputCopy.trim(),
-        output: OutputResponseCopy.trim(),
+        conversation: conversation,
         timestamp: new Date().toLocaleString(),
+        pageTitle: pageContext ? pageContext.title : "Unknown Page",
+        pageUrl: pageContext ? pageContext.url : window.location.href,
       };
 
       try {
@@ -552,8 +588,9 @@
         await chrome.storage.local.set({ notes });
 
         const tempMsg = document.createElement("div");
+        tempMsg.className = "success-msg";
         tempMsg.textContent =
-          "Note saved successfully! Open collection page to see saved notes";
+          "Conversation saved successfully! Open collection page to see saved notes";
         output.appendChild(tempMsg);
         output.scrollTop = output.scrollHeight;
         setTimeout(() => tempMsg.remove(), 3000);
@@ -561,10 +598,16 @@
         console.error("Error saving note:", error);
         const tempMsg = document.createElement("div");
         tempMsg.className = "error-msg";
-        tempMsg.textContent = "Failed to save note. Check console for details.";
+        
+        if (error.message && error.message.includes("Extension context invalidated")) {
+          tempMsg.textContent = "Extension was reloaded. Please refresh the page and try again.";
+        } else {
+          tempMsg.textContent = `Failed to save note: ${error.message || "Unknown error"}`;
+        }
+        
         output.appendChild(tempMsg);
         output.scrollTop = output.scrollHeight;
-        setTimeout(() => tempMsg.remove(), 3000);
+        setTimeout(() => tempMsg.remove(), 5000);
       }
     });
 
@@ -769,7 +812,29 @@
 
     // Footer “Saved Collection” button
     savedCollectionBtn.addEventListener("click", () => {
-      chrome.runtime.sendMessage({ action: "openCollectionPage" });
+      // Check if chrome.runtime is available
+      if (!chrome.runtime || !chrome.runtime.id) {
+        alert("Extension was reloaded. Please refresh this page to use the extension.");
+        return;
+      }
+      
+      try {
+        chrome.runtime.sendMessage({ action: "openCollectionPage" }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.warn("Could not send message to background:", chrome.runtime.lastError);
+            // Try to get extension URL
+            try {
+              const collectionUrl = chrome.runtime.getURL("collection.html");
+              window.open(collectionUrl, "_blank");
+            } catch (urlError) {
+              alert("Extension context lost. Please refresh this page to use the extension.");
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Extension error:", error);
+        alert("Extension context lost. Please refresh this page to use the extension.");
+      }
     });
   }
 
@@ -783,7 +848,7 @@
       } else {
         console.log("Page context NOT loaded, will answer without context");
         welcomeText.textContent =
-          "How can I help you today? (No clear page context detected)";
+          "How can I help you today? (No clear page context detected) but you can ask";
       }
     } catch (error) {
       console.error("Failed to initialize page context:", error);

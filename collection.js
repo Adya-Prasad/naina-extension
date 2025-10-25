@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-
   // DOM Elements
   const container = document.getElementById("notes-collection");
   const modal = document.getElementById("modal");
@@ -46,9 +45,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     [...notes].reverse().forEach((note) => {
       const card = document.createElement("div");
       card.className = "note-card";
+
+      // Handle both old format (input/output) and new format (conversation)
+      let previewText = "";
+      let messageCount = 0;
+
+      if (note.conversation) {
+        // New format: conversation array
+        const firstUserMsg = note.conversation.find(
+          (msg) => msg.type === "user"
+        );
+        previewText = firstUserMsg
+          ? firstUserMsg.content.slice(0, 50)
+          : "Conversation";
+        messageCount = note.conversation.length;
+      } else {
+        // Old format: single input/output
+        previewText = note.input ? note.input.slice(0, 50) : "Note";
+        messageCount = 2; // 1 input + 1 output
+      }
+
       card.innerHTML = `
-        <h2><i>Q:</i> ${note.input.slice(0, 50)}...</h2>
-        <p class="label">${new Date(note.timestamp).toLocaleString()}</p>
+        <h2><i>Q:</i> ${previewText}...</h2>
+        <p class="label">${note.timestamp}</p>
+        <p class="label"><b>${messageCount / 2} conversation</b></p>
         <div class="btns">
           <button class="view-btn">View</button>
           <button class="delete-btn">Delete</button>
@@ -57,11 +77,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // --- View button: open modal ---
       card.querySelector(".view-btn").addEventListener("click", () => {
-        noteTitle.textContent = `Input: ${note.input}`;
-        noteBody.innerHTML = `
-          <p class="label"><b>Saved on:</b> ${note.timestamp}</p>
-          <div>${renderMarkdown(note.output)}</div>
-        `;
+        if (note.conversation) {
+          // New format: display conversation
+          noteTitle.textContent = `Conversation from ${note.timestamp}`;
+          let conversationHTML = "";
+
+          note.conversation.forEach((msg, index) => {
+            if (msg.type === "user") {
+              conversationHTML += `
+                <div class="user-msg-view">
+                  <p>${msg.content}</p>
+                </div>
+              `;
+            } else {
+              conversationHTML += `
+                <div class="ai-msg-view">
+                  <div>${msg.content}</div>
+                </div>
+              `;
+            }
+          });
+
+          noteBody.innerHTML = conversationHTML;
+        } else {
+          // Old format: display input/output
+          noteTitle.textContent = `Note from ${note.timestamp}`;
+          noteBody.innerHTML = `
+            <p class="user-msg-view">${note.input}</p>
+            <div>${renderMarkdown(note.output)}</div>
+          `;
+        }
         modal.classList.add("active");
       });
 

@@ -4,6 +4,8 @@
 
 Naina Assistant is a Chrome extension that provides AI assistance using Chrome's built-in Gemini Nano model through the Prompt API. The extension creates a draggable, resizable overlay on any webpage for seamless AI interaction with context awareness of the current page.
 
+Naina names with meaning having vision, so same as its name reflect, naina can see your page, what happend
+
 ## What We Built
 
 ### Core Features
